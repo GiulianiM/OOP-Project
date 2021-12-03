@@ -2,4 +2,8 @@
 
 ## Prova read me
 
-tabella | semplice
+##Tabella
+
+Tizio | Caio | Sempronio
+---- | ---- | ----
+ciao | come | va
