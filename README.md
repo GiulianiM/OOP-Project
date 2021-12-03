@@ -2,7 +2,7 @@
 
 ## Prova read me
 
-##Tabella
+Tabella
 
 Tizio | Caio | Sempronio
 ---- | ---- | ----
