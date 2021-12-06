@@ -5,8 +5,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.ArrayList;
-
 public class JSONHandler {
 
     public static Object toJSON(String text) {

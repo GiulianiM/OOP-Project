@@ -2,10 +2,10 @@ package it.giuugcola.OOPProject.restController;
 
 import it.giuugcola.OOPProject.JSONManage.JSONHandler;
 import org.springframework.web.bind.annotation.*;
-import it.giuugcola.OOPProject.settings.Contants;
+import it.giuugcola.OOPProject.settings.Constants;
 
 @RestController
-public class Controller implements Contants{
+public class Controller implements Constants{
 
     @RequestMapping("/")
     public String homePage(){

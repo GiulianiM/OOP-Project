@@ -1,6 +1,6 @@
 package it.giuugcola.OOPProject.restController;
 
-import it.giuugcola.OOPProject.settings.Contants;
+import it.giuugcola.OOPProject.settings.Constants;
 import it.giuugcola.OOPProject.settings.HTTPConnection;
 
 import java.io.*;
@@ -8,12 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class CallsHandler implements Contants, HTTPConnection {
+public class CallsHandler implements Constants, HTTPConnection {
 
     public String list_folder_root() {
 
         //stabilisce la connessione
-        HttpURLConnection connection = getConnection();
+        HttpURLConnection connection = getConnection(LIST_FOLDER_PATH);
 
         String jBody = """
                 {
@@ -55,10 +55,10 @@ public class CallsHandler implements Contants, HTTPConnection {
 
     public String get_metadata(String path) {
         //stabilisce la connessione
-        HttpURLConnection connection = getConnection();
+        HttpURLConnection connection = getConnection(GET_METADATA_PATH);
 
         String jBody = "{\n" +
-                "    \"path\": \"" + path +"\",\n" +
+                "    \"path\": \"" + path + "\",\n" +
                 "    \"include_media_info\": true,\n" +
                 "    \"include_deleted\": false,\n" +
                 "    \"include_has_explicit_shared_members\": false\n" +
@@ -91,10 +91,11 @@ public class CallsHandler implements Contants, HTTPConnection {
     }
 
 
+
     @Override
-    public HttpURLConnection getConnection() {
+    public HttpURLConnection getConnection(String url) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(LIST_FOLDER_PATH).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
             connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
             connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
