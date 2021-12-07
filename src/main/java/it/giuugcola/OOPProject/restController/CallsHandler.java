@@ -1,19 +1,35 @@
 package it.giuugcola.OOPProject.restController;
 
+import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.files.FileMetadata;
+import it.giuugcola.OOPProject.JSONManage.JSONHandler;
 import it.giuugcola.OOPProject.settings.Constants;
-import it.giuugcola.OOPProject.settings.HTTPConnection;
+import it.giuugcola.OOPProject.settings.DropboxClient;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class CallsHandler implements Constants, HTTPConnection {
+public class CallsHandler implements Constants {
 
     public String list_folder_root() {
 
         //stabilisce la connessione
-        HttpURLConnection connection = getConnection(LIST_FOLDER_PATH);
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(LIST_FOLDER_PATH).openConnection();
+
+            connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
+            connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String jBody = """
                 {
@@ -55,7 +71,19 @@ public class CallsHandler implements Constants, HTTPConnection {
 
     public String get_metadata(String path) {
         //stabilisce la connessione
-        HttpURLConnection connection = getConnection(GET_METADATA_PATH);
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(GET_METADATA_PATH).openConnection();
+
+            connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
+            connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String jBody = "{\n" +
                 "    \"path\": \"" + path + "\",\n" +
@@ -90,22 +118,26 @@ public class CallsHandler implements Constants, HTTPConnection {
         return data;
     }
 
-
-
-    @Override
-    public HttpURLConnection getConnection(String url) {
+    public FileMetadata download(String path, String fileName){
+        OutputStream outputStream = null;
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-
-            connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
-            connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-            return connection;
+            outputStream = new FileOutputStream("Downloads/" + fileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        FileMetadata metadata = null;
+        try {
+             metadata = DropboxClient.getClient().files()
+                    .downloadBuilder(path+"/"+fileName)
+                    .download(outputStream);
+        } catch (DbxException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+
+       return metadata;
     }
+
+
 }
