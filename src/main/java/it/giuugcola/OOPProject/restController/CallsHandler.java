@@ -2,7 +2,6 @@ package it.giuugcola.OOPProject.restController;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.files.FileMetadata;
-import it.giuugcola.OOPProject.JSONManage.JSONHandler;
 import it.giuugcola.OOPProject.settings.Constants;
 import it.giuugcola.OOPProject.settings.DropboxClient;
 
@@ -138,6 +137,5 @@ public class CallsHandler implements Constants {
 
        return metadata;
     }
-
 
 }
