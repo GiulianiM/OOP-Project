@@ -1,11 +1,11 @@
 package it.giuugcola.OOPProject.restController;
 
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v2.files.DownloadZipResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import it.giuugcola.OOPProject.settings.Constants;
 import it.giuugcola.OOPProject.settings.DropboxClient;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,10 +15,9 @@ public class CallsHandler implements Constants {
 
     public String list_folder_root() {
 
-        //stabilisce la connessione
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) new URL(LIST_FOLDER_PATH).openConnection();
+            connection = (HttpURLConnection) new URL(LIST_FOLDER_DROPBOX_API_PATH).openConnection();
 
             connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
             connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
@@ -51,13 +50,14 @@ public class CallsHandler implements Constants {
             e.printStackTrace();
         }
 
-        String line = "", data = "";
+        String line;
+        StringBuilder data = new StringBuilder();
         try {
             InputStream IS = connection.getInputStream();
             BufferedReader BR = new BufferedReader(new InputStreamReader(IS));
 
             while ((line = BR.readLine()) != null) {
-                data += line;
+                data.append(line);
             }
 
             IS.close();
@@ -65,14 +65,14 @@ public class CallsHandler implements Constants {
             e.printStackTrace();
         }
 
-        return data;
+        return data.toString();
     }
 
     public String get_metadata(String path) {
-        //stabilisce la connessione
+
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) new URL(GET_METADATA_PATH).openConnection();
+            connection = (HttpURLConnection) new URL(GET_METADATA_DROPBOX_API_PATH).openConnection();
 
             connection.setRequestMethod("POST"); //one of: GET POST HEAD OPTIONS PUT DELETE TRACE are legal, subject to protocol restrictions
             connection.setRequestProperty("Authorization", "Bearer " + APP_TOKEN);
@@ -100,42 +100,64 @@ public class CallsHandler implements Constants {
             e.printStackTrace();
         }
 
-        String line = "", data = "";
+        String line;
+        StringBuilder data = new StringBuilder();
         try {
             InputStream IS = connection.getInputStream();
             BufferedReader BR = new BufferedReader(new InputStreamReader(IS));
 
             while ((line = BR.readLine()) != null) {
-                data += line;
+                data.append(line);
             }
 
             IS.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return data;
+        return data.toString();
     }
 
-    public FileMetadata download(String path, String fileName){
-        OutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream("Downloads/" + fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public FileMetadata download(String path) {
+        String download_where = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path);
+
         FileMetadata metadata = null;
         try {
-             metadata = DropboxClient.getClient().files()
-                    .downloadBuilder(path+"/"+fileName)
+            OutputStream outputStream  = new FileOutputStream(download_where);
+            metadata = DropboxClient.getClient()
+                    .files()
+                    .downloadBuilder(path)
                     .download(outputStream);
-        } catch (DbxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            outputStream.close();
+        } catch (DbxException | IOException e) {
             e.printStackTrace();
         }
 
-       return metadata;
+        return metadata;
     }
 
+    public DownloadZipResult download_zip(String path) {
+        String download_where = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path) + ".zip";
+
+        DownloadZipResult metadata = null;
+        try {
+            OutputStream outputStream = new FileOutputStream(download_where);
+            metadata = DropboxClient.getClient()
+                    .files()
+                    .downloadZipBuilder(path)
+                    .download(outputStream);
+            outputStream.close();
+        } catch (DbxException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return metadata;
+    }
+
+    //Esempio input: /Images/AboutYesterday/Animals
+    //Return expected: Animals
+    //Esempio input: /Images/AboutYesterday/Animals/dog.jpg
+    //Return expected: dog.jpg
+    private String getFileOrFolderName(String path) {
+        return path.substring( path.lastIndexOf("/") + 1);
+    }
 }
