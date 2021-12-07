@@ -1,10 +1,10 @@
 package it.giuugcola.OOPProject.metaData;
 
 /**
- * Classe figlia di {@code File}, esempi di come si può utilizzare {@code FileMultimedia}:
+ * Classe figlio di {@code MultiMedia}, esempi di come si può utilizzare {@code Media}:
  * <blockquote><pre>
- *     FileMultimedia fileImg =
- *     new File("parrots.img", "/Images", 7200, 1300, 500);
+ *     Media fileImg =
+ *     new Media("parrots.img", "/Images", 7200, 1300, 500);
  *     System.out.println(fileImg)
  *     fileImg.getWidth();
  *     fileImg.getHeight();
@@ -16,18 +16,18 @@ package it.giuugcola.OOPProject.metaData;
  *     fileImg.getSize();
  * </pre></blockquote>
  * <p>
- * La classe File contiene anche metodi basilari quali i getter per ogni suo parametro:
+ * La classe Media contiene anche metodi basilari quali i getter per ogni suo parametro:
  * {@code name, path, size}; un metodo toString per la stampa a schermo
  * delle caratteristiche del file.
  *
  * @author Davide Colabella
  * @implNote
- * @see it.giuugcola.OOPProject.metaData.File
+ * @see MultiMedia
  * @see java.lang.Integer
  * @since 1.0
  */
 
-public class FileMultimedia extends File {
+public class Media extends MultiMedia {
 
     /**
      * Valore utilizzato per contenere la larghezza del file.
@@ -40,9 +40,9 @@ public class FileMultimedia extends File {
     private final int height;
 
     /**
-     * Costruttore della classe {@link FileMultimedia}, per tipologie di file quali immagini o video.
+     * Costruttore della classe {@link Media}, per tipologie di file quali immagini o video.
      * <p>
-     * Eredita il costruttore super dalla classe {@link File}
+     * Eredita il costruttore super dalla classe {@link MultiMedia}
      * </p>
      *
      * @param name   Nome del file.
@@ -51,7 +51,7 @@ public class FileMultimedia extends File {
      * @param height Altezza file, in px.
      * @param width  Larghezza file, in px.
      */
-    public FileMultimedia(String name, String path, long size, int width, int height) {
+    public Media(String name, String path, long size, int width, int height) {
         super(name, path, size);
         this.width = width;
         this.height = height;
@@ -76,7 +76,7 @@ public class FileMultimedia extends File {
     }
 
     /**
-     * Override del metodo toString adattato alla classe {@link FileMultimedia}
+     * Override del metodo toString adattato alla classe {@link Media}
      *
      * @return File{name="", path="/", size=, width=, height=}
      */
