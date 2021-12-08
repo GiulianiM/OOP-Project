@@ -29,32 +29,30 @@ package it.giuugcola.OOPProject.metaData;
 
 public class Media extends MultiMedia {
 
-    /**
-     * Valore utilizzato per contenere la larghezza del file.
-     */
-    private final int width; //da rivedere se usare int per width e height
-
-    /**
-     * Valore utilizzato per contenere l'altezza del file.
-     */
+    private final int width;
     private final int height;
+    private final String type;
 
     /**
      * Costruttore della classe {@link Media}, per tipologie di file quali immagini o video.
      * <p>
      * Eredita il costruttore super dalla classe {@link MultiMedia}
      * </p>
-     *
      * @param name   Nome del file.
      * @param path   Percorso del file su Dropbox.
      * @param size   Dimensione del file.
-     * @param height Altezza file, in px.
      * @param width  Larghezza file, in px.
+     * @param height Altezza file, in px.
+     * @param is_downloadable
+     * @param id
+     * @param content_hash
+     * @param type
      */
-    public Media(String name, String path, long size, int width, int height) {
-        super(name, path, size);
+    public Media(String type, String name, String path, long size, String id, String content_hash, boolean is_downloadable, int width, int height) {
+        super(name, path, content_hash, size, id, is_downloadable);
         this.width = width;
         this.height = height;
+        this.type = type;
     }
 
     /**
@@ -73,6 +71,10 @@ public class Media extends MultiMedia {
      */
     public int getHeight() {
         return height;
+    }
+
+    public String getType() {
+        return type;
     }
 
     /**

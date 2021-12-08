@@ -25,35 +25,33 @@ package it.giuugcola.OOPProject.metaData;
 
 public abstract class MultiMedia {
 
-    /**
-     * Stringa utilizzata per immagazzinare il nome del file.
-     */
     private final String name;
-
-    /**
-     * Stringa utilizzata per immagazzinare il percorso del file.
-     */
     private final String path;
-
-    /**
-     * Valore utilizzato per contenere la dimensione del file in byte.
-     */
+    private final String content_hash;
+    private final String id;
     private final long size;
+    private final boolean is_downloadable;
+
 
     /**
      * Costruttore della classe MultiMedia, per tipologie di file quali documenti o file di testo.
-     *
      * @param name Nome del file.
      * @param path Percorso del file su Dropbox.
+     * @param content_hash
      * @param size Dimensione del file.
+     * @param id
+     * @param is_downloadable
      */
-    public MultiMedia(String name, String path, long size) {
+    public MultiMedia(String name, String path, String content_hash, long size, String id, boolean is_downloadable) {
         if (name == null) {
             throw new IllegalArgumentException("Required value for 'name' is null");
         }
         this.name = name;
         this.path = path;
         this.size = size;
+        this.id = id;
+        this.content_hash = content_hash;
+        this.is_downloadable = is_downloadable;
     }
 
     /**
@@ -83,6 +81,18 @@ public abstract class MultiMedia {
         return size;
     }
 
+    public String getContent_hash() {
+        return content_hash;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isIs_downloadable() {
+        return is_downloadable;
+    }
+
     /**
      * Override del metodo toString adattato alla classe {@link MultiMedia}
      *
@@ -90,11 +100,13 @@ public abstract class MultiMedia {
      */
     @Override
     public String toString() {
-        return "File{" +
+        return "MultiMedia{" +
                 "name='" + name + '\'' +
                 ", path='" + path + '\'' +
+                ", content_hash='" + content_hash + '\'' +
+                ", id='" + id + '\'' +
                 ", size=" + size +
+                ", is_downloadable=" + is_downloadable +
                 '}';
     }
-
 }
