@@ -28,7 +28,6 @@ public class Controller implements Constants {
 
     @PostMapping("/dir")
     public Object dir() {
-        CallsHandler call = new CallsHandler();
         ListFolderResult result = CallsHandler.list_folder_root();
         return JSONHandler.toJSON(result);
     }
@@ -40,8 +39,8 @@ public class Controller implements Constants {
     }
 
     @PostMapping("/getDataPathName")
-    public JSONObject getDataPathName(@RequestParam(name = "path") String pathName) {
-        Metadata result = CallsHandler.get_metadata(pathName);
+    public JSONObject getDataPathName(@RequestParam(name = "path") String path) {
+        Metadata result = CallsHandler.get_metadata(path);
         return JSONHandler.toJSON(result);
     }
 

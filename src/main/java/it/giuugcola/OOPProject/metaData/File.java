@@ -20,13 +20,12 @@ public class File extends MultiMedia {
      * Richiama il costruttore della classe padre {@link MultiMedia}.
      * </p>
      * @param name Nome del file.
-     * @param path Percorso del file su Dropbox.
      * @param size Dimensione del file.
      * @param content_hash
      * @param id
      * @param is_downloadable
      */
-    public File(String name, String path, long size, String  id,  String content_hash, boolean is_downloadable) {
-        super(name, path, content_hash, size, id, is_downloadable);
+    public File(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash) {
+        super(rev, size, path_lower, is_downloadable, name, tag, id, content_hash);
     }
 }

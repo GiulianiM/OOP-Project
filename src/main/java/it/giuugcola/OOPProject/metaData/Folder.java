@@ -2,41 +2,41 @@ package it.giuugcola.OOPProject.metaData;
 
 public class Folder {
 
-    private final String id;
-    private final String path;
+    private final String path_lower;
     private final String name;
-    private final String type;
+    private final String tag;
+    private final String id;
 
-    public Folder(String id, String name, String path, String type) {
-        this.id = id;
-        this.path = path;
+    public Folder(String path_lower, String name, String tag, String id) {
+        this.path_lower = path_lower;
         this.name = name;
-        this.type = type;
+        this.tag = tag;
+        this.id = id;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getPath() {
-        return path;
+    public String getPath_lower() {
+        return path_lower;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getType() {
-        return type;
+    public String getTag() {
+        return tag;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
     public String toString() {
         return "Folder{" +
-                "id='" + id + '\'' +
-                ", path='" + path + '\'' +
+                ", path_lower='" + path_lower + '\'' +
                 ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
+                ", tag='" + tag + '\'' +
+                ", id='" + id + '\'' +
                 '}';
     }
 }

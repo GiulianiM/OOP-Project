@@ -21,92 +21,73 @@ package it.giuugcola.OOPProject.metaData;
  * @see java.lang.Long
  * @since 1.0
  */
-
-
 public abstract class MultiMedia {
 
-    private final String name;
-    private final String path;
-    private final String content_hash;
-    private final String id;
+    private final String rev;
     private final long size;
+    private final String path_lower;
     private final boolean is_downloadable;
+    private final String name;
+    private final String tag;
+    private final String id;
+    private final String content_hash;
 
-
-    /**
-     * Costruttore della classe MultiMedia, per tipologie di file quali documenti o file di testo.
-     * @param name Nome del file.
-     * @param path Percorso del file su Dropbox.
-     * @param content_hash
-     * @param size Dimensione del file.
-     * @param id
-     * @param is_downloadable
-     */
-    public MultiMedia(String name, String path, String content_hash, long size, String id, boolean is_downloadable) {
-        if (name == null) {
-            throw new IllegalArgumentException("Required value for 'name' is null");
-        }
-        this.name = name;
-        this.path = path;
+    public MultiMedia(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash) {
+        this.rev = rev;
         this.size = size;
+        this.path_lower = path_lower;
+        this.is_downloadable = is_downloadable;
+        this.name = name;
+        this.tag = tag;
         this.id = id;
         this.content_hash = content_hash;
-        this.is_downloadable = is_downloadable;
     }
 
-    /**
-     * Metodo get per ottenere il nome di un file.
-     *
-     * @return Nome file
-     */
-    public String getName() {
-        return name;
+
+    public String getRev() {
+        return rev;
     }
 
-    /**
-     * Metodo get per ottenere il Percorso di un file.
-     *
-     * @return Percorso file
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * Metodo get per ottenere la Dimensione di un file.
-     *
-     * @return Dimensione file
-     */
     public long getSize() {
         return size;
     }
 
-    public String getContent_hash() {
-        return content_hash;
+    public String getPath_lower() {
+        return path_lower;
+    }
+
+    public boolean isDownloadable() {
+        return is_downloadable;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public String getId() {
         return id;
     }
 
-    public boolean isIs_downloadable() {
-        return is_downloadable;
+    public String getContent_hash() {
+        return content_hash;
     }
 
-    /**
-     * Override del metodo toString adattato alla classe {@link MultiMedia}
-     *
-     * @return File{name="", path="/", size=}
-     */
+
     @Override
     public String toString() {
-        return "MultiMedia{" +
-                "name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                ", content_hash='" + content_hash + '\'' +
-                ", id='" + id + '\'' +
+        return "File{" +
+                ", rev='" + rev + '\'' +
                 ", size=" + size +
+                ", path_lower='" + path_lower + '\'' +
                 ", is_downloadable=" + is_downloadable +
+                ", name='" + name + '\'' +
+                ", tag='" + tag + '\'' +
+                ", id='" + id + '\'' +
+                ", content_hash='" + content_hash + '\'' +
                 '}';
     }
 }

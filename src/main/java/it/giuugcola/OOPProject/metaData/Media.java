@@ -5,7 +5,7 @@ package it.giuugcola.OOPProject.metaData;
  * <blockquote><pre>
  *     Media fileImg =
  *     new Media("parrots.img", "/Images", 7200, 1300, 500);
- *     System.out.println(fileImg)
+ *     System.out.prlongln(fileImg)
  *     fileImg.getWidth();
  *     fileImg.getHeight();
  * </pre></blockquote>
@@ -23,15 +23,14 @@ package it.giuugcola.OOPProject.metaData;
  * @author Davide Colabella
  * @implNote
  * @see MultiMedia
- * @see java.lang.Integer
+ * @see java.lang
  * @since 1.0
  */
 
 public class Media extends MultiMedia {
 
-    private final int width;
-    private final int height;
-    private final String type;
+    private final long width;
+    private final long height;
 
     /**
      * Costruttore della classe {@link Media}, per tipologie di file quali immagini o video.
@@ -39,20 +38,17 @@ public class Media extends MultiMedia {
      * Eredita il costruttore super dalla classe {@link MultiMedia}
      * </p>
      * @param name   Nome del file.
-     * @param path   Percorso del file su Dropbox.
      * @param size   Dimensione del file.
      * @param width  Larghezza file, in px.
      * @param height Altezza file, in px.
      * @param is_downloadable
      * @param id
      * @param content_hash
-     * @param type
      */
-    public Media(String type, String name, String path, long size, String id, String content_hash, boolean is_downloadable, int width, int height) {
-        super(name, path, content_hash, size, id, is_downloadable);
+    public Media(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash, long width, long height) {
+        super(rev, size, path_lower, is_downloadable, name, tag, id, content_hash);
         this.width = width;
         this.height = height;
-        this.type = type;
     }
 
     /**
@@ -60,7 +56,7 @@ public class Media extends MultiMedia {
      *
      * @return Larghezza file in px
      */
-    public int getWidth() {
+    public long getWidth() {
         return width;
     }
 
@@ -69,27 +65,23 @@ public class Media extends MultiMedia {
      *
      * @return Altezza file in px
      */
-    public int getHeight() {
+    public long getHeight() {
         return height;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Override del metodo toString adattato alla classe {@link Media}
-     *
-     * @return File{name="", path="/", size=, width=, height=}
-     */
     @Override
     public String toString() {
-        return "File{" +
-                "name='" + this.getName() + '\'' +
-                ", path='" + this.getPath() + '\'' +
-                ", size=" + this.getSize() +
-                ", width=" + width +
-                ", height=" + height +
+        return "Media{" +
+                ", rev='" + getRev() + '\'' +
+                ", size=" + getSize() + '\'' +
+                ", path_lower='" + getPath_lower() + '\'' +
+                ", is_downloadable=" + isDownloadable() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", tag='" + getTag() + '\'' +
+                ", id='" + getId() + '\'' +
+                ", content_hash='" + getContent_hash() + '\'' +
+                "width='" + width + '\'' +
+                ", height='" + height + '\'' +
                 '}';
     }
 }
