@@ -6,16 +6,16 @@ import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import it.giuugcola.OOPProject.JSONManage.JSONHandler;
 import it.giuugcola.OOPProject.metaData.DownloadedContent;
+import it.giuugcola.OOPProject.metaData.FileMap;
+import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
 import it.giuugcola.OOPProject.settings.Constants;
 import org.json.simple.JSONObject;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Controller implements Constants {
     DownloadedContent AOM = new DownloadedContent();
+    FileMap fileMap = new FileMap();
 
     @RequestMapping("/")
     public String homePage() {
@@ -27,7 +27,7 @@ public class Controller implements Constants {
     }
 
     @PostMapping("/dir")
-    public Object dir() {
+    public JSONObject dir() {
         ListFolderResult result = CallsHandler.list_folder_root();
         return JSONHandler.toJSON(result);
     }
@@ -61,4 +61,16 @@ public class Controller implements Constants {
 
         return JSONHandler.toJSON(result);
     }
+
+    @GetMapping("/stats")
+    public JSONObject stats() {
+        return JSONHandler.toJSONstats(fileMap.populateMaps(AOM));
+    }
+
+    @GetMapping("/stats/mmm")
+    public JSONObject statsmmm() {
+        FileMinAvgMax fileMinAvgMax = CallsHandler.statsmmm(fileMap.populateMaps(AOM)); //{} deriva da populateMaps
+        return JSONHandler.toJSONMinAvgMax(fileMinAvgMax);
+    }
+
 }

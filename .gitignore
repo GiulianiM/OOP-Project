@@ -1,9 +1,11 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
+**/src/main/**/target/
+**/src/test/**/target/
 src/main/java/it/giuugcola/OOPProject/JSONManage/te.java
+/src/main/java/it/giuugcola/OOPProject/restController/CallsHandlerOLD.java
+/downloads/
 
 ### STS ###
 .apt_generated
@@ -27,8 +29,9 @@ src/main/java/it/giuugcola/OOPProject/JSONManage/te.java
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+**/src/main/**/build/
+**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
