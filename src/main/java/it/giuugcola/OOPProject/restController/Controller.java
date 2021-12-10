@@ -8,21 +8,21 @@ import it.giuugcola.OOPProject.JSONManage.JSONHandler;
 import it.giuugcola.OOPProject.metaData.DownloadedContent;
 import it.giuugcola.OOPProject.metaData.FileMap;
 import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
-import it.giuugcola.OOPProject.settings.Constants;
+import it.giuugcola.OOPProject.utility.Html;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class Controller implements Constants {
+public class Controller {
     DownloadedContent AOM = new DownloadedContent();
+
+    public DownloadedContent getAOM() {
+        return AOM;
+    }
 
     @RequestMapping("/")
     public String homePage() {
-        return """
-                <h1 style="text-align: center;"><strong> Progetto OOP </strong></h1>
-                <p style="text-align: center;"><strong> Giuliani Matteo </strong></p>
-                <p style="text-align: center;"><strong> Colabella Davide </strong></p>
-                """;
+        return Html.homePage();
     }
 
     @PostMapping("/dir")

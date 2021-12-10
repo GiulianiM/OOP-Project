@@ -5,7 +5,6 @@ import com.dropbox.core.v2.files.*;
 import it.giuugcola.OOPProject.metaData.DownloadedContent;
 import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
 import it.giuugcola.OOPProject.metaData.MultiMedia;
-import it.giuugcola.OOPProject.settings.Constants;
 import it.giuugcola.OOPProject.settings.DropboxClient;
 import org.springframework.util.StringUtils;
 
@@ -14,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-public class CallsHandler implements Constants {
+public class CallsHandler{
+
+    private static final String DOWNLOAD_FOLDER_PATH = "Downloads";
 
     public static ListFolderResult list_folder_root() {
         ListFolderResult metadata = null;
@@ -216,7 +217,7 @@ public class CallsHandler implements Constants {
     //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto
     public static Double checkInput(String str) {
         System.out.println(str);
-        double value = 0.0;
+        double value;
         if (str.contains(".")) {
             value = Double.parseDouble(str);
         } else if (str.contains(",")) {

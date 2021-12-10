@@ -25,7 +25,7 @@ public class JSONHandler {
         return jObject_root;
     }
 
-    public static JSONObject toJSONstats(ArrayList<Map<String, String>> mapArray) {
+    public static JSONObject toJSONStats(ArrayList<Map<String, String>> mapArray) {
         Map<String, String> mapFiles = mapArray.get(0);
         Map<String, String> mapPhotos = mapArray.get(1);
         Map<String, String> mapVideos = mapArray.get(2);
