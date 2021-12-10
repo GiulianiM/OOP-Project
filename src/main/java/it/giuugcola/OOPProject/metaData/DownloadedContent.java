@@ -7,9 +7,16 @@ import it.giuugcola.OOPProject.JSONManage.JSONOfMultimedia;
 import java.util.ArrayList;
 
 public class DownloadedContent {
-    ArrayList<MultiMedia> multimedia = new ArrayList<>();
+    ArrayList<MultiMedia> multimedia;
     ArrayList<Folder> folders = new ArrayList<>();
 
+    public DownloadedContent(ArrayList<MultiMedia> multimedia) {
+        this.multimedia = new ArrayList<>(multimedia);
+    }
+
+    public DownloadedContent() {
+        this.multimedia = new ArrayList<>();
+    }
 
     public void addMultimedia(Object result) {
         JSONHandler.populateClassJSONOfMultimedia(result);
@@ -40,6 +47,7 @@ public class DownloadedContent {
                         JSONOfMultimedia.getHeight()
                 ));
     }
+
     public void addFolder(Object result) {
         JSONHandler.populateClassJSONOfFolder(result);
 
@@ -64,6 +72,7 @@ public class DownloadedContent {
 
         return !isContained;
     }
+
     private boolean isNotDownloaded(String unique) {
         boolean isContained = false;
 
@@ -74,9 +83,11 @@ public class DownloadedContent {
             }
         return !isContained;
     }
+
     public ArrayList<MultiMedia> getMultimedia() {
         return multimedia;
     }
+
     public ArrayList<Folder> getFolders() {
         return folders;
     }

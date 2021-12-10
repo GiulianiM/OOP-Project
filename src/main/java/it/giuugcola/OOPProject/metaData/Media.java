@@ -37,10 +37,11 @@ public class Media extends MultiMedia {
      * <p>
      * Eredita il costruttore super dalla classe {@link MultiMedia}
      * </p>
-     * @param name   Nome del file.
-     * @param size   Dimensione del file.
-     * @param width  Larghezza file, in px.
-     * @param height Altezza file, in px.
+     *
+     * @param name            Nome del file.
+     * @param size            Dimensione del file.
+     * @param width           Larghezza file, in px.
+     * @param height          Altezza file, in px.
      * @param is_downloadable
      * @param id
      * @param content_hash

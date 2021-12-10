@@ -10,19 +10,19 @@ public class FileMap {
     Map<String, String> photos = new HashMap<>();
     Map<String, String> videos = new HashMap<>();
 
-    public ArrayList<Map<String, String>> populateMaps(DownloadedContent AOM) {
-        long byteToMb = 1024*1024;
+    public ArrayList<Map<String, String>> populateMaps(DownloadedContent dlc) {
+        long byteToMb = 1024 * 1024;
 
-        if (!AOM.getMultimedia().isEmpty()) {
-            for (MultiMedia m : AOM.getMultimedia()) {
+        if (!dlc.getMultimedia().isEmpty()) {
+            for (MultiMedia m : dlc.getMultimedia()) {
                 if (m.getClass() == File.class) {
-                    files.put(m.getName(), String.format("%.2f",(double)m.getSize() / byteToMb) +"MB");
+                    files.put(m.getName(), String.format("%.2f", (double) m.getSize() / byteToMb) + "MB");
                 }
                 if (m.getClass() == Media.class) {
                     if (((Media) m).getTag().equals("photo"))
-                        photos.put(m.getName(), String.format("%.2f",(double)m.getSize() / byteToMb) +"MB");
+                        photos.put(m.getName(), String.format("%.2f", (double) m.getSize() / byteToMb) + "MB");
                     else
-                        videos.put(m.getName(), String.format("%.2f",(double)m.getSize() / byteToMb) +"MB");
+                        videos.put(m.getName(), String.format("%.2f", (double) m.getSize() / byteToMb) + "MB");
                 }
             }
         }//TODO Else statement

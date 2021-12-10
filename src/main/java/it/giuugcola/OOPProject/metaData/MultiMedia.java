@@ -52,6 +52,11 @@ public abstract class MultiMedia {
         return size;
     }
 
+    public Double getSizeMB() {
+        double sizeMB = size / (double) 1048576;
+        return Math.round(sizeMB * 100.0) / 100.0;
+    }
+
     public String getPath_lower() {
         return path_lower;
     }

@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class OopProjectApplication implements Constants {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OopProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(OopProjectApplication.class, args);
+    }
 
 }

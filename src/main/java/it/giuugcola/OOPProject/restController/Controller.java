@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class Controller implements Constants {
     DownloadedContent AOM = new DownloadedContent();
-    FileMap fileMap = new FileMap();
 
     @RequestMapping("/")
     public String homePage() {
@@ -45,7 +44,7 @@ public class Controller implements Constants {
     }
 
     @PostMapping("/downloadFile")
-    public JSONObject downloadFile(@RequestParam(name="path") String path) {
+    public JSONObject downloadFile(@RequestParam(name = "path") String path) {
         FileMetadata result = CallsHandler.download(path);
         AOM.addMultimedia(result);
         System.out.println(AOM.getMultimedia());
@@ -54,7 +53,7 @@ public class Controller implements Constants {
     }
 
     @PostMapping("/downloadZip")
-    public JSONObject downloadZip(@RequestParam(name="path") String path) {
+    public JSONObject downloadZip(@RequestParam(name = "path") String path) {
         DownloadZipResult result = CallsHandler.download_zip(path);
         AOM.addFolder(result);
         System.out.println(AOM.getFolders());
@@ -64,13 +63,17 @@ public class Controller implements Constants {
 
     @GetMapping("/stats")
     public JSONObject stats() {
-        return JSONHandler.toJSONstats(fileMap.populateMaps(AOM));
+        return JSONHandler.toJSONStats(new FileMap().populateMaps(AOM));
     }
 
-    @GetMapping("/stats/mmm")
+    @GetMapping("/minAvgMax")
     public JSONObject statsmmm() {
-        FileMinAvgMax fileMinAvgMax = CallsHandler.statsmmm(fileMap.populateMaps(AOM)); //{} deriva da populateMaps
+        FileMinAvgMax fileMinAvgMax = CallsHandler.statsMAM(new FileMap().populateMaps(AOM)); //{} deriva da populateMaps
         return JSONHandler.toJSONMinAvgMax(fileMinAvgMax);
     }
 
+    @GetMapping("/statsFiltered")
+    public JSONObject statsFiltered(@RequestParam(name = "filter", defaultValue = "") String filter) {
+        return JSONHandler.toJSONStats(new FileMap().populateMaps(CallsHandler.statsFiltered(AOM, filter)));
+    }
 }

@@ -19,8 +19,9 @@ public class File extends MultiMedia {
      * <p>
      * Richiama il costruttore della classe padre {@link MultiMedia}.
      * </p>
-     * @param name Nome del file.
-     * @param size Dimensione del file.
+     *
+     * @param name            Nome del file.
+     * @param size            Dimensione del file.
      * @param content_hash
      * @param id
      * @param is_downloadable

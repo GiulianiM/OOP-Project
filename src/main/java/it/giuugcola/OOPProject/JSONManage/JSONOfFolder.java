@@ -7,7 +7,7 @@ public class JSONOfFolder {
     private static String tag;
     private static String id;
 
-    public static  String getPath_display() {
+    public static String getPath_display() {
         return path_display;
     }
 

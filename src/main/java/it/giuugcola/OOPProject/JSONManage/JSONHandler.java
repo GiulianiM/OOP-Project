@@ -104,45 +104,42 @@ public class JSONHandler {
         JSONObject MaxVideo = new JSONObject();
 
         for (String s : fileArrayList) {
-            if(s.contains(" ") && s.equals(fileArrayList.get(0))) {
+            if (s.contains(" ") && s.equals(fileArrayList.get(0))) {
                 fileMin = s.split("\\s+");
                 MinFile.put("Name", fileMin[0]);
                 MinFile.put("Size", fileMin[1]);
             }
-             if(s.contains(" ") && s.equals(fileArrayList.get(2))) {
+            if (s.contains(" ") && s.equals(fileArrayList.get(2))) {
                 fileMax = s.split("\\s+");
                 MaxFile.put("Name", fileMax[0]);
                 MaxFile.put("Size", fileMax[1]);
-            }else
-                AvgFile.put("Size", s);
+            } else AvgFile.put("Size", s);
         }
 
         for (String s : photoArrayList) {
-            if(s.contains(" ") && s.equals(photoArrayList.get(0))) {
+            if (s.contains(" ") && s.equals(photoArrayList.get(0))) {
                 photoMin = s.split("\\s+");
                 MinPhoto.put("Name", photoMin[0]);
                 MinPhoto.put("Size", photoMin[1]);
             }
-            if(s.contains(" ") && s.equals(photoArrayList.get(2))) {
-                photoMax= s.split("\\s+");
+            if (s.contains(" ") && s.equals(photoArrayList.get(2))) {
+                photoMax = s.split("\\s+");
                 MaxPhoto.put("Name", photoMax[0]);
                 MaxPhoto.put("Size", photoMax[1]);
-            }else
-                AvgPhoto.put("Size", s);
+            } else AvgPhoto.put("Size", s);
         }
 
         for (String s : videoArrayList) {
-            if(s.contains(" ") && s.equals(videoArrayList.get(0))) {
+            if (s.contains(" ") && s.equals(videoArrayList.get(0))) {
                 videoMin = s.split("\\s+");
                 MinVideo.put("Name", videoMin[0]);
                 MinVideo.put("Size", videoMin[1]);
             }
-            if(s.contains(" ") && s.equals(videoArrayList.get(2))) {
-                videoMax= s.split("\\s+");
+            if (s.contains(" ") && s.equals(videoArrayList.get(2))) {
+                videoMax = s.split("\\s+");
                 MaxVideo.put("Name", videoMax[0]);
                 MaxVideo.put("Size", videoMax[1]);
-            }else
-                AvgVideo.put("Size", s);
+            } else AvgVideo.put("Size", s);
         }
 
         File.put("Min", MinFile);
