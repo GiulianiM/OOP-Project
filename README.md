@@ -1,8 +1,8 @@
-#Progetto Corso POO  
+# Progetto Corso POO  
 
 ![Banner Dropbox](img/dB/DropboxLogoojpg.jpg "Banner Dropbox")
 
-##Indice :bookmark:
+## Indice  :bookmark:
 * [Introduzione](#introduzione)  
 * [Rotte](#rotte)  
 * [Rotte Aggiuntive](#rotte-aggiuntive)
@@ -13,7 +13,7 @@
 
   
 <a name="introduzione"></a>  
-##Introduzione 
+## Introduzione 
 
 <img src="img/dB/MiniLogoBlu.png" align="right" alt="Icona Dropbox" width="88" height="88">
 
@@ -30,7 +30,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
   
 <a name="rotte"></a>
 ## Rotte  
-  
+
 | Tipo     | Rotta            | Descrizione                                                      |
 |----------|------------------|------------------------------------------------------------------|
 | ` post ` | `/downloadZip`   | Effettua il download di una cartella                             |
@@ -39,7 +39,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 | ` get `  | `/statsFiltered` | Effettua le statistiche sui file scaricati in base al parametro. |
  
 <a name="rotte-aggiuntive"></a> 
-##Rotte aggiuntive
+## Rotte aggiuntive
 | Tipo     | Rotta              | Descrizione                                                            |
 |----------|--------------------|------------------------------------------------------------------------|
 | ` post ` | `/getDataPathName` | Restituisce informazioni sul percorso specificato.                     |
@@ -47,10 +47,10 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 | ` get `  | `/minAvgMax`       | Calcola dimensione minima, media e massima per tipo di file scaricato. |
 
 <a name="rotte-post"></a>
-##Rotte POST
+## Rotte POST
 
-###/downloadZip
-####Chiamata su Postman
+### /downloadZip
+#### Chiamata su Postman
 ![rotta downloadZip](img/post/downloadZip.png "Immagine downloadZip")
 La chiamata prende come parametro `path` e il suo valore corrisponde alla cartella che si vuole scaricare, 
 nella foto `/Documents`.  
@@ -67,8 +67,8 @@ In risposta otteniamo un JSON di questo formato:
     }
 }
 ```
-###/download
-####Chiamata su Postman
+### /download
+#### Chiamata su Postman
 ![rotta download](img/post/download.png "Immagine download")
 La chiamata prende come parametro `path` e il suo valore corrisponde al percorso del file 
 che si vuole scaricare, nella foto `/Images/Parrots.jpg`.
@@ -100,8 +100,8 @@ In risposta otteniamo un JSON di questo formato:
 }
 
 ```
-###/getDataPathName
-####Chiamata su Postman
+### /getDataPathName
+#### Chiamata su Postman
 ![rotta getDataPathName](img/post/dataPath.png "Immagine getDataPathName")
 La chiamata prende come parametro `path` e il suo valore corrisponde al percorso o file di cui 
 vogliamo ottenere informazioni, nella foto `/Images/Parrots.jpg`.
@@ -123,8 +123,8 @@ In risposta otteniamo un JSON di questo formato:
 }
 
 ```
-###/getDataId
-####Chiamata su Postman
+### /getDataId
+#### Chiamata su Postman
 ![rotta getDataId](img/post/dataId.png "Immagine getDataId")
 La chiamata prende come parametro `id` e il suo valore corrisponde all'id univoco del 
 percorso o file di cui vogliamo ottenere informazioni, nella foto `DsnniHqkdCgAAAAAAAAACQ`.
@@ -142,9 +142,9 @@ In risposta otteniamo un JSON di questo formato:
 ```  
 
 <a name="rotte-get"></a>
-##Rotte GET
-##/stats
-###Chiamata su Postman
+## Rotte GET
+## /stats
+### Chiamata su Postman
 ![rotta stats](img/get/stats.png "Immagine stats")
 La chiamate restituisce un JSON dove vengono inseriti, suddivisi per tipologia, i file
 scaricati.  
@@ -173,8 +173,8 @@ In risposta otteniamo un JSON di questo formato:
     }
 }
 ```
-##/minAvgMax
-###Chiamata su Postman
+## /minAvgMax
+### Chiamata su Postman
 ![rotta minAvgMax](img/get/mam.png "Immagine minAvgMax")
 La chiamate restituisce un JSON dove vengono inseriti i file scaricati divisi per dimensioni 
 minime, massime e media dimensioni per tipo di file.  
@@ -226,7 +226,7 @@ In risposta otteniamo un JSON di questo formato:
 }
 ```
 
-##/statsFiltered
+## /statsFiltered
 ![rotta statsFiltered](img/get/statsFiltered.png "Immagine statsFiltered")
 La chiamata prende un parametro chiamato `filter` il cui valore viene assegnato come segue:  
   
@@ -272,7 +272,7 @@ In risposta otteniamo un JSON di questo formato:
 }
 ```
 <a name="tecnologie-utilizzate"></a>
-##Tecnologie utilizzate
+## Tecnologie utilizzate
 
 Per la realizzazione di questa applicazione sono stati implementati all'interno del 
 progetto [SpringBoot](https://spring.io/), [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview) e 
@@ -285,7 +285,4 @@ progetto [SpringBoot](https://spring.io/), [Dropbox Api V2](https://www.dropbox.
 |---------------------------------------------------------|--------------------|
 | [Davide Colabella](https://github.com/Davide-Colabella) | :desktop_computer: |
 | [Matteo Giuliani](https://github.com/GiulianiM)         | :basketball:       |
-**Giuliani Matteo**: 
-
-**Colabella Davide**: 
 
