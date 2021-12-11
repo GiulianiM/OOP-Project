@@ -13,9 +13,9 @@
 
   
 <a name="introduzione"></a>  
-## Introduzione 
+## Introduzione :blue_book:
 
-<img src="img/dB/MiniLogoBlu.png" align="right" alt="Icona Dropbox" width="88" height="88">
+<img src="img/dB/MiniLogoBlu.png" alt="Icona Dropbox" width="88" height="88" style="float: right">
 
 L'applicazione SpringBoot qui pubblicata ha come scopo principale quello di scaricare file dal proprio account Dropbox, 
 mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview).  
@@ -29,7 +29,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
   
   
 <a name="rotte"></a>
-## Rotte  
+## Rotte :globe_with_meridians: 
 
 | Tipo     | Rotta            | Descrizione                                                      |
 |----------|------------------|------------------------------------------------------------------|
@@ -39,7 +39,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 | ` get `  | `/statsFiltered` | Effettua le statistiche sui file scaricati in base al parametro. |
  
 <a name="rotte-aggiuntive"></a> 
-## Rotte aggiuntive
+## Rotte aggiuntive :globe_with_meridians::heavy_plus_sign:
 | Tipo     | Rotta              | Descrizione                                                            |
 |----------|--------------------|------------------------------------------------------------------------|
 | ` post ` | `/getDataPathName` | Restituisce informazioni sul percorso specificato.                     |
@@ -47,7 +47,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 | ` get `  | `/minAvgMax`       | Calcola dimensione minima, media e massima per tipo di file scaricato. |
 
 <a name="rotte-post"></a>
-## Rotte POST
+## Rotte POST :arrow_down:
 
 ### /downloadZip
 #### Chiamata su Postman
@@ -142,11 +142,11 @@ In risposta otteniamo un JSON di questo formato:
 ```  
 
 <a name="rotte-get"></a>
-## Rotte GET
+## Rotte GET :arrow_up:
 ## /stats
 ### Chiamata su Postman
 ![rotta stats](img/get/stats.png "Immagine stats")
-La chiamate restituisce un JSON dove vengono inseriti, suddivisi per tipologia, i file
+La chiamata restituisce un JSON dove vengono inseriti, suddivisi per tipologia, i file
 scaricati.  
 In risposta otteniamo un JSON di questo formato: 
 ```json
@@ -176,7 +176,7 @@ In risposta otteniamo un JSON di questo formato:
 ## /minAvgMax
 ### Chiamata su Postman
 ![rotta minAvgMax](img/get/mam.png "Immagine minAvgMax")
-La chiamate restituisce un JSON dove vengono inseriti i file scaricati divisi per dimensioni 
+La chiamata restituisce un JSON dove vengono inseriti i file scaricati divisi per dimensioni 
 minime, massime e media dimensioni per tipo di file.  
 
 In risposta otteniamo un JSON di questo formato:
@@ -239,12 +239,14 @@ La chiamata prende un parametro chiamato `filter` il cui valore viene assegnato 
 | `=`     | Uguale            |
 | `bt`    | Compreso          |
 
-Una volta scelto il simbolo per formare il filtro aggiungiamo una virgola e la dimensione 
-desiderata, ad esempio: `filter=>,1` oppure se vogliamo utilizzare un numero con la virgola, 
-`filter=>,1.0`, prestando attenzione a utilizzare il punto e non la virgola nella dimensione.  
+Una volta scelto il simbolo per creare il filtro apriamo le parentesi tonde e inseriamo 
+la dimensione desiderata, ad esempio: `filter=>(1)` oppure se vogliamo utilizzare un numero con la virgola, 
+`filter=>(1.0)`.  
+  
+Nello specificare la dimensione si possono utilizzare anche i decimi, ad esempio `2.4` o `2,4`. 
   
 Nel caso di `bt` oltre alla prima dimensione bisogna aggiungerne un'altra separata dalla prima 
-con una `,`, ad esempio: `filter=bt,1,2` oppure `filter=bt,1.0,1.2`.
+con un punto e virgola `;`, ad esempio: `filter=bt(1;2)` oppure `filter=bt(1.0;1.2)`.
 
 In risposta otteniamo un JSON di questo formato:
 ```json
@@ -272,14 +274,14 @@ In risposta otteniamo un JSON di questo formato:
 }
 ```
 <a name="tecnologie-utilizzate"></a>
-## Tecnologie utilizzate
+## Tecnologie utilizzate :gear:
 
 Per la realizzazione di questa applicazione sono stati implementati all'interno del 
 progetto [SpringBoot](https://spring.io/), [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview) e 
 [Dropbox Java SDK](https://www.dropbox.com/developers/documentation/java).
 
 <a name="autori"></a>
-## Autori
+## Autori :muscle:
 
 | Nome                                                    |                    |
 |---------------------------------------------------------|--------------------|

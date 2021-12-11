@@ -1,7 +1,5 @@
 package it.giuugcola.OOPProject.utility;
 
-import org.json.simple.JSONObject;
-
 public class Html {
 
     public static String homePage() {
