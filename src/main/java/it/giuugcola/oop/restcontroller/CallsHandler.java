@@ -1,11 +1,11 @@
-package it.giuugcola.OOPProject.restController;
+package it.giuugcola.oop.restcontroller;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.files.*;
-import it.giuugcola.OOPProject.metaData.DownloadedContent;
-import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
-import it.giuugcola.OOPProject.metaData.MultiMedia;
-import it.giuugcola.OOPProject.settings.DropboxClient;
+import it.giuugcola.oop.metadata.Downloaded;
+import it.giuugcola.oop.metadata.FileMinAvgMax;
+import it.giuugcola.oop.metadata.MultiMedia;
+import it.giuugcola.oop.settings.DropboxClient;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -18,7 +18,7 @@ public class CallsHandler {
 
     private static final String DOWNLOAD_FOLDER_PATH = "Downloads";
 
-    public static ListFolderResult list_folder_root() {
+    public static ListFolderResult listFolderRoot() {
         ListFolderResult metadata = null;
 
         try {
@@ -30,7 +30,7 @@ public class CallsHandler {
         return metadata;
     }
 
-    public static Metadata get_metadata(String path) {
+    public static Metadata getMetadata(String path) {
         Metadata metadata = null;
 
         try {
@@ -42,28 +42,35 @@ public class CallsHandler {
         return metadata;
     }
 
-    public static FileMetadata download(String path) {
-        String download_where = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path);
+    public static FileMetadata downloadFile(String path) {
+        String localDownloadPath = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path);
 
         FileMetadata metadata = null;
         try {
-            OutputStream outputStream = new FileOutputStream(download_where);
-            metadata = DropboxClient.getClient().files().downloadBuilder(path).download(outputStream);
+            OutputStream outputStream = new FileOutputStream(localDownloadPath);
+            metadata = DropboxClient.getClient()
+                    .files()
+                    .downloadBuilder(path)
+                    .download(outputStream);
             outputStream.close();
         } catch (DbxException | IOException e) {
             e.printStackTrace();
         }
 
+        //Todo restituire una stringa nuccun chiù bell
         return metadata;
     }
 
-    public static DownloadZipResult download_zip(String path) {
-        String download_where = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path) + ".zip";
+    public static DownloadZipResult downloadZip(String path) {
+        String localDownloadPath = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path) + ".zip";
 
         DownloadZipResult metadata = null;
         try {
-            OutputStream outputStream = new FileOutputStream(download_where);
-            metadata = DropboxClient.getClient().files().downloadZipBuilder(path).download(outputStream);
+            OutputStream outputStream = new FileOutputStream(localDownloadPath);
+            metadata = DropboxClient.getClient()
+                    .files()
+                    .downloadZipBuilder(path)
+                    .download(outputStream);
             outputStream.close();
         } catch (DbxException | IOException e) {
             e.printStackTrace();
@@ -72,7 +79,7 @@ public class CallsHandler {
         return metadata;
     }
 
-    public static FileMinAvgMax statsMAM(ArrayList<Map<String, String>> mapArray) {
+    public static FileMinAvgMax getMinAvgMax(ArrayList<Map<String, String>> mapArray) {
         Map<String, String> mapFiles = mapArray.get(0); //Name, size
         Map<String, String> mapPhotos = mapArray.get(1);
         Map<String, String> mapVideos = mapArray.get(2);
@@ -88,7 +95,7 @@ public class CallsHandler {
         return fileMinAvgMax;
     }
 
-    public static DownloadedContent statsFiltered(DownloadedContent downloadList, String filter) {
+    public static Downloaded getFiltered(Downloaded downloadList, String filter) {
         ArrayList<MultiMedia> filteredFiles = new ArrayList<>();
         final String regex = "[()]";
         final String separator = ";";
@@ -141,7 +148,7 @@ public class CallsHandler {
         } else System.out.println("Non ci sono le parentesi");
 
 
-        return new DownloadedContent(filteredFiles);
+        return new Downloaded(filteredFiles);
     }
 
     //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto

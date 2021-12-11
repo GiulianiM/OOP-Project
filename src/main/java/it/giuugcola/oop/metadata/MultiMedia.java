@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
 /**
  * Classe astratta, esempi di come si può utilizzare {@code MultiMedia}:
@@ -21,26 +21,26 @@ package it.giuugcola.OOPProject.metaData;
  * @see java.lang.Long
  * @since 1.0
  */
-public abstract class MultiMedia {
+public abstract class MultiMedia implements Metadata{
 
     private final String rev;
     private final long size;
-    private final String path_lower;
-    private final boolean is_downloadable;
+    private final String pathLower;
+    private final boolean isDownloadable;
     private final String name;
     private final String tag;
     private final String id;
-    private final String content_hash;
+    private final String contentHash;
 
-    public MultiMedia(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash) {
+    protected MultiMedia(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash) {
         this.rev = rev;
         this.size = size;
-        this.path_lower = path_lower;
-        this.is_downloadable = is_downloadable;
+        this.pathLower = pathLower;
+        this.isDownloadable = isDownloadable;
         this.name = name;
         this.tag = tag;
         this.id = id;
-        this.content_hash = content_hash;
+        this.contentHash = contentHash;
     }
 
 
@@ -57,12 +57,12 @@ public abstract class MultiMedia {
         return Math.round(sizeMB * 100.0) / 100.0;
     }
 
-    public String getPath_lower() {
-        return path_lower;
+    public String getPathLower() {
+        return pathLower;
     }
 
     public boolean isDownloadable() {
-        return is_downloadable;
+        return isDownloadable;
     }
 
     public String getName() {
@@ -77,8 +77,8 @@ public abstract class MultiMedia {
         return id;
     }
 
-    public String getContent_hash() {
-        return content_hash;
+    public String getContentHash() {
+        return contentHash;
     }
 
 
@@ -87,12 +87,12 @@ public abstract class MultiMedia {
         return "File{" +
                 ", rev='" + rev + '\'' +
                 ", size=" + size +
-                ", path_lower='" + path_lower + '\'' +
-                ", is_downloadable=" + is_downloadable +
+                ", path_lower='" + pathLower + '\'' +
+                ", is_downloadable=" + isDownloadable +
                 ", name='" + name + '\'' +
                 ", tag='" + tag + '\'' +
                 ", id='" + id + '\'' +
-                ", content_hash='" + content_hash + '\'' +
+                ", content_hash='" + contentHash + '\'' +
                 '}';
     }
 }

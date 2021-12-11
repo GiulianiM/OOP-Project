@@ -1,11 +1,11 @@
-package it.giuugcola.OOPProject.restController;
+package it.giuugcola.oop.restcontroller;
 
 import com.dropbox.core.v2.files.DownloadZipResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
-import it.giuugcola.OOPProject.JSONManage.JSONHandler;
-import it.giuugcola.OOPProject.metaData.FileMap;
-import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
+import it.giuugcola.oop.jsonhandler.JSONHandler;
+import it.giuugcola.oop.metadata.FileMap;
+import it.giuugcola.oop.metadata.FileMinAvgMax;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,8 +22,8 @@ class ControllerTest {
     @ParameterizedTest
     @MethodSource("provideStringsForGetDataPathName")
     public void getDataPathName(String path, String json) {
-        Metadata result = CallsHandler.get_metadata(path);
-        Assertions.assertEquals(JSONHandler.toJSON(json), JSONHandler.toJSON(result));
+        Metadata result = CallsHandler.getMetadata(path);
+        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
     }
 
     private static Stream<Arguments> provideStringsForGetDataPathName() {
@@ -57,8 +57,8 @@ class ControllerTest {
     @ParameterizedTest
     @MethodSource("provideStringsForGetDataId")
     public void getDataId(String id, String json) {
-        Metadata result = CallsHandler.get_metadata(id);
-        Assertions.assertEquals(JSONHandler.toJSON(json), JSONHandler.toJSON(result));
+        Metadata result = CallsHandler.getMetadata(id);
+        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
     }
 
     private static Stream<Arguments> provideStringsForGetDataId() {
@@ -92,10 +92,10 @@ class ControllerTest {
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadFile")
     public void downloadFile(String path, String json) {
-        FileMetadata result = CallsHandler.download(path);
-        test.getAOM().addMultimedia(result);
-        Assertions.assertFalse(JSONHandler.toJSON(result).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJSON(json), JSONHandler.toJSON(result));
+        FileMetadata result = CallsHandler.downloadFile(path);
+        test.getDownloaded().addMultimedia(result);
+        Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
     }
 
     private static Stream<Arguments> provideStringsForDownloadFile() {
@@ -145,10 +145,10 @@ class ControllerTest {
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadZip")
     public void downloadZip(String path, String json) {
-        DownloadZipResult result = CallsHandler.download_zip(path);
-        test.getAOM().addFolder(result);
-        Assertions.assertFalse(JSONHandler.toJSON(result).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJSON(result), JSONHandler.toJSON(json));
+        DownloadZipResult result = CallsHandler.downloadZip(path);
+        test.getDownloaded().addFolder(result);
+        Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(result), JSONHandler.toJson(json));
     }
 
     private static Stream<Arguments> provideStringsForDownloadZip() {
@@ -182,11 +182,11 @@ class ControllerTest {
     public void stats(String stats) {
         String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
         for (String str : paths) {
-            FileMetadata result = CallsHandler.download(str);
-            test.getAOM().addMultimedia(result);
+            FileMetadata result = CallsHandler.downloadFile(str);
+            test.getDownloaded().addMultimedia(result);
         }
-        Assertions.assertFalse(JSONHandler.toJSONStats(new FileMap().populateMaps(test.getAOM())).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJSON(stats), JSONHandler.toJSONStats(new FileMap().populateMaps(test.getAOM())));
+        Assertions.assertFalse(JSONHandler.toJsonStats(new FileMap().populateMaps(test.getDownloaded())).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(stats), JSONHandler.toJsonStats(new FileMap().populateMaps(test.getDownloaded())));
     }
 
     private static Stream<Arguments> provideStringsForStats() {
@@ -218,12 +218,12 @@ class ControllerTest {
     public void statsmmm(String statsMAM) {
         String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
         for (String str : paths) {
-            FileMetadata result = CallsHandler.download(str);
-            test.getAOM().addMultimedia(result);
+            FileMetadata result = CallsHandler.downloadFile(str);
+            test.getDownloaded().addMultimedia(result);
         }
-        FileMinAvgMax fileMinAvgMax = CallsHandler.statsMAM(new FileMap().populateMaps(test.getAOM())); //{} deriva da populateMaps
-        Assertions.assertFalse(JSONHandler.toJSONMinAvgMax(fileMinAvgMax).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJSON(statsMAM), JSONHandler.toJSONMinAvgMax(fileMinAvgMax));
+        FileMinAvgMax fileMinAvgMax = CallsHandler.getMinAvgMax(new FileMap().populateMaps(test.getDownloaded())); //{} deriva da populateMaps
+        Assertions.assertFalse(JSONHandler.toJsonMinAvgMax(fileMinAvgMax).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(statsMAM), JSONHandler.toJsonMinAvgMax(fileMinAvgMax));
     }
 
     private static Stream<Arguments> provideStringsForStatsMAM() {
@@ -271,10 +271,10 @@ class ControllerTest {
     @ParameterizedTest
     @MethodSource("provideStringsForStatsFiltered")
     public void statsFiltered(String filter, String json) {
-        FileMetadata result = CallsHandler.download("/Documents/sample_of_text.txt");
-        test.getAOM().addMultimedia(result);
-        Assertions.assertFalse(JSONHandler.toJSONStats(new FileMap().populateMaps(CallsHandler.statsFiltered(test.getAOM(), filter))).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJSON(json), JSONHandler.toJSONStats(new FileMap().populateMaps(CallsHandler.statsFiltered(test.getAOM(), filter))));
+        FileMetadata result = CallsHandler.downloadFile("/Documents/sample_of_text.txt");
+        test.getDownloaded().addMultimedia(result);
+        Assertions.assertFalse(JSONHandler.toJsonStats(new FileMap().populateMaps(CallsHandler.getFiltered(test.getDownloaded(), filter))).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJsonStats(new FileMap().populateMaps(CallsHandler.getFiltered(test.getDownloaded(), filter))));
     }
 
     private static Stream<Arguments> provideStringsForStatsFiltered() {

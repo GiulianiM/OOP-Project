@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject;
+package it.giuugcola.oop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

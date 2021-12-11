@@ -1,21 +1,21 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
-public class Folder {
+public class Folder implements Metadata{
 
-    private final String path_lower;
+    private final String pathLower;
     private final String name;
     private final String tag;
     private final String id;
 
-    public Folder(String path_lower, String name, String tag, String id) {
-        this.path_lower = path_lower;
+    public Folder(String pathLower, String name, String tag, String id) {
+        this.pathLower = pathLower;
         this.name = name;
         this.tag = tag;
         this.id = id;
     }
 
-    public String getPath_lower() {
-        return path_lower;
+    public String getPathLower() {
+        return pathLower;
     }
 
     public String getName() {
@@ -33,7 +33,7 @@ public class Folder {
     @Override
     public String toString() {
         return "Folder{" +
-                ", path_lower='" + path_lower + '\'' +
+                ", path_lower='" + pathLower + '\'' +
                 ", name='" + name + '\'' +
                 ", tag='" + tag + '\'' +
                 ", id='" + id + '\'' +

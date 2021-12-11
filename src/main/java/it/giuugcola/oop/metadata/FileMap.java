@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ public class FileMap {
     Map<String, String> photos = new HashMap<>();
     Map<String, String> videos = new HashMap<>();
 
-    public ArrayList<Map<String, String>> populateMaps(DownloadedContent dlc) {
+    public ArrayList<Map<String, String>> populateMaps(Downloaded dlc) {
         long byteToMb = 1024 * 1024;
 
         if (!dlc.getMultimedia().isEmpty()) {

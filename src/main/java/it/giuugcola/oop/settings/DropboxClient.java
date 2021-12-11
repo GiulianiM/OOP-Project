@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.settings;
+package it.giuugcola.oop.settings;
 
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;

@@ -1,6 +1,6 @@
-package it.giuugcola.OOPProject.JSONManage;
+package it.giuugcola.oop.jsonhandler;
 
-import it.giuugcola.OOPProject.metaData.FileMinAvgMax;
+import it.giuugcola.oop.metadata.FileMinAvgMax;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,20 +12,21 @@ import java.util.Map;
 public class JSONHandler {
 
     //da Oggetto a Json
-    public static JSONObject toJSON(Object text) {
+    public static JSONObject toJson(Object text) {
         JSONParser jParser = new JSONParser();
-        JSONObject jObject_root = null;
+        JSONObject jObjectRoot = null;
         try {
-            jObject_root = (JSONObject) jParser.parse(text.toString());
+            jObjectRoot = (JSONObject) jParser.parse(text.toString());
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return jObject_root;
+        return jObjectRoot;
     }
 
-    public static JSONObject toJSONStats(ArrayList<Map<String, String>> mapArray) {
+    //todo metodo ausiliario come in CallsHandler-
+    public static JSONObject toJsonStats(ArrayList<Map<String, String>> mapArray) {
         Map<String, String> mapFiles = mapArray.get(0);
         Map<String, String> mapPhotos = mapArray.get(1);
         Map<String, String> mapVideos = mapArray.get(2);
@@ -69,7 +70,7 @@ public class JSONHandler {
         return list;
     }
 
-    public static JSONObject toJSONMinAvgMax(FileMinAvgMax fileMinAvgMax) {
+    public static JSONObject toJsonMinAvgMax(FileMinAvgMax fileMinAvgMax) {
         ArrayList<String> fileArrayList = fileMinAvgMax.getMinAvgMaxFile();
         ArrayList<String> photoArrayList = fileMinAvgMax.getMinAvgMaxPhoto();
         ArrayList<String> videoArrayList = fileMinAvgMax.getMinAvgMaxVideo();
@@ -163,58 +164,66 @@ public class JSONHandler {
         return minAvgMax;
     }
 
-    public static void populateClassJSONOfMultimedia(Object result) {
+    public static void setJSONOfMultimedia(Object result, JSONOfMultimedia jMultimedia) {
         JSONParser jParser = new JSONParser();
 
+        String tag = null;
+        long width = 0;
+        long height = 0;
+
+
         try {
-            JSONObject jObject_root = (JSONObject) jParser.parse(result.toString());
-            JSONOfMultimedia.setPath_display((String) jObject_root.get("path_display"));
-            JSONOfMultimedia.setRev((String) jObject_root.get("rev"));
-            JSONOfMultimedia.setSize((Long) jObject_root.get("size"));
-            JSONOfMultimedia.setServer_modified((String) jObject_root.get("server_modified"));
-            JSONOfMultimedia.setPath_lower((String) jObject_root.get("path_lower"));
-            JSONOfMultimedia.setIs_downloadable((Boolean) jObject_root.get("is_downloadable"));
-            JSONOfMultimedia.setName((String) jObject_root.get("name"));
-            JSONOfMultimedia.setTag((String) jObject_root.get(".tag"));
-            JSONOfMultimedia.setId((String) jObject_root.get("id"));
-            JSONOfMultimedia.setContent_hash((String) jObject_root.get("content_hash"));
-            JSONOfMultimedia.setClient_modified((String) jObject_root.get("client_modified"));
+            JSONObject jObjectRoot = (JSONObject) jParser.parse(result.toString());
+            tag = (String) jObjectRoot.get(".tag");
 
-            if (jObject_root.containsKey("media_info")) {
-                JSONObject jObject_media_info = (JSONObject) jObject_root.get("media_info");
+            if (jObjectRoot.containsKey("media_info")) {
+                JSONObject jObjectMediaInfo = (JSONObject) jObjectRoot.get("media_info");
+                JSONObject jObjectMetadata = (JSONObject) jObjectMediaInfo.get("metadata");
+                JSONObject jObjectDimensions = (JSONObject) jObjectMetadata.get("dimensions");
 
-                if (jObject_media_info.containsKey("metadata")) {
-                    JSONObject jObject_metadata = (JSONObject) jObject_media_info.get("metadata");
-                    JSONOfMultimedia.setTag((String) jObject_metadata.get(".tag"));
-
-                    if (jObject_metadata.containsKey("dimensions")) {
-                        JSONObject jObject_dimensions = (JSONObject) jObject_metadata.get("dimensions");
-                        JSONOfMultimedia.setWidth((Long) jObject_dimensions.get("width"));
-                        JSONOfMultimedia.setHeight((Long) jObject_dimensions.get("height"));
-                    }
-                }
+                tag = (String) jObjectMetadata.get(".tag");
+                width = (Long) jObjectDimensions.get("width");
+                height = (Long) jObjectDimensions.get("height");
             }
+
+            jMultimedia.setPathDisplay((String) jObjectRoot.get("path_display"));
+            jMultimedia.setRev((String) jObjectRoot.get("rev"));
+            jMultimedia.setSize((Long) jObjectRoot.get("size"));
+            jMultimedia.setServerModified((String) jObjectRoot.get("server_modified"));
+            jMultimedia.setPathLower((String) jObjectRoot.get("path_lower"));
+            jMultimedia.setDownloadable((Boolean) jObjectRoot.get("is_downloadable"));
+            jMultimedia.setName((String) jObjectRoot.get("name"));
+            jMultimedia.setId((String) jObjectRoot.get("id"));
+            jMultimedia.setContentHash((String) jObjectRoot.get("content_hash"));
+            jMultimedia.setClientModified((String) jObjectRoot.get("client_modified"));
+            jMultimedia.setTag(tag);
+            jMultimedia.setWidth(width);
+            jMultimedia.setHeight(height);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public static void populateClassJSONOfFolder(Object result) {
+    public static void setJSONOfFolder(Object result, JSONOfFolder jFolder) {
         JSONParser jParser = new JSONParser();
 
         try {
-            JSONObject jObject_root = (JSONObject) jParser.parse(result.toString());
-            if (jObject_root.containsKey("metadata")) {
-                JSONObject jObject_metadata = (JSONObject) jObject_root.get("metadata");
-                JSONOfFolder.setPath_display((String) jObject_metadata.get("path_display"));
-                JSONOfFolder.setPath_lower((String) jObject_metadata.get("path_lower"));
-                JSONOfFolder.setName((String) jObject_metadata.get("name"));
-                JSONOfFolder.setTag((String) jObject_metadata.get(".tag"));
-                JSONOfFolder.setId((String) jObject_metadata.get("id"));
+            JSONObject jObjectRoot = (JSONObject) jParser.parse(result.toString());
+            if (jObjectRoot.containsKey("metadata")) {
+                JSONObject jObjectMetadata = (JSONObject) jObjectRoot.get("metadata");
+
+                jFolder.setPathDisplay((String) jObjectMetadata.get("path_display"));
+                jFolder.setPathDisplay((String) jObjectMetadata.get("path_lower"));
+                jFolder.setName((String) jObjectMetadata.get("name"));
+                jFolder.setTag((String) jObjectMetadata.get(".tag"));
+                jFolder.setId((String) jObjectMetadata.get("id"));
+
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
     }
+
 }

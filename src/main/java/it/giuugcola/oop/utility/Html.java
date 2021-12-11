@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.utility;
+package it.giuugcola.oop.utility;
 
 public class Html {
 

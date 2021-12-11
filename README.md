@@ -31,12 +31,12 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 <a name="rotte"></a>
 ## Rotte :globe_with_meridians: 
 
-| Tipo     | Rotta            | Descrizione                                                      |
-|----------|------------------|------------------------------------------------------------------|
-| ` post ` | `/downloadZip`   | Effettua il download di una cartella                             |
-| ` post ` | `/download`      | Effettua il download di un file.                                 |
-| ` get `  | `/stats`         | Effettua le statistiche sui file scaricati.                      |
-| ` get `  | `/statsFiltered` | Effettua le statistiche sui file scaricati in base al parametro. |
+| Tipo     | Rotta              | Descrizione                                                      |
+|----------|--------------------|------------------------------------------------------------------|
+| ` post ` | `/downloadZip`     | Effettua il download di una cartella                             |
+| ` post ` | `/downloadFile`       | Effettua il download di un file.                                 |
+| ` get `  | `/getList`         | Effettua le statistiche sui file scaricati.                      |
+| ` get `  | `/getListFiltered` | Effettua le statistiche sui file scaricati in base al parametro. |
  
 <a name="rotte-aggiuntive"></a> 
 ## Rotte aggiuntive :globe_with_meridians::heavy_plus_sign:
@@ -44,7 +44,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 |----------|--------------------|------------------------------------------------------------------------|
 | ` post ` | `/getDataPathName` | Restituisce informazioni sul percorso specificato.                     |
 | ` post ` | `/getDataId`       | Restituisce informazioni sul file o la cartella specificati.           |
-| ` get `  | `/minAvgMax`       | Calcola dimensione minima, media e massima per tipo di file scaricato. |
+| ` get `  | `/getListMinAvgMax`       | Calcola dimensione minima, media e massima per tipo di file scaricato. |
 
 <a name="rotte-post"></a>
 ## Rotte POST :arrow_down:
@@ -67,7 +67,7 @@ In risposta otteniamo un JSON di questo formato:
     }
 }
 ```
-### /download
+### /downloadFile
 #### Chiamata su Postman
 ![rotta download](img/post/download.png "Immagine download")
 La chiamata prende come parametro `path` e il suo valore corrisponde al percorso del file 
@@ -143,7 +143,7 @@ In risposta otteniamo un JSON di questo formato:
 
 <a name="rotte-get"></a>
 ## Rotte GET :arrow_up:
-## /stats
+## /getList
 ### Chiamata su Postman
 ![rotta stats](img/get/stats.png "Immagine stats")
 La chiamata restituisce un JSON dove vengono inseriti, suddivisi per tipologia, i file
@@ -173,7 +173,7 @@ In risposta otteniamo un JSON di questo formato:
     }
 }
 ```
-## /minAvgMax
+## /getListMinAvgMax
 ### Chiamata su Postman
 ![rotta minAvgMax](img/get/mam.png "Immagine minAvgMax")
 La chiamata restituisce un JSON dove vengono inseriti i file scaricati divisi per dimensioni 
@@ -226,7 +226,7 @@ In risposta otteniamo un JSON di questo formato:
 }
 ```
 
-## /statsFiltered
+## /getListFiltered
 ![rotta statsFiltered](img/get/statsFiltered.png "Immagine statsFiltered")
 La chiamata prende un parametro chiamato `filter` il cui valore viene assegnato come segue:  
   
@@ -283,8 +283,8 @@ progetto [SpringBoot](https://spring.io/), [Dropbox Api V2](https://www.dropbox.
 <a name="autori"></a>
 ## Autori :muscle:
 
-| Nome                                                    |                    |
-|---------------------------------------------------------|--------------------|
-| [Davide Colabella](https://github.com/Davide-Colabella) | :desktop_computer: |
-| [Matteo Giuliani](https://github.com/GiulianiM)         | :basketball:       |
+| Nome                                                    | Linkedin                                                            |
+|---------------------------------------------------------|---------------------------------------------------------------------|
+| [Davide Colabella](https://github.com/Davide-Colabella) | [Linkedin](https://www.linkedin.com/in/davide-colabella-a51017164/) |
+| [Matteo Giuliani](https://github.com/GiulianiM)         | [Linkedin](https://www.linkedin.com/in/matteo-giuliani-b552b5221/)  |
 

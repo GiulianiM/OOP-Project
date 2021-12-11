@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
 /**
  * Classe figlio di {@code MultiMedia}, esempi di come si può utilizzare {@code Media}:
@@ -42,12 +42,12 @@ public class Media extends MultiMedia {
      * @param size            Dimensione del file.
      * @param width           Larghezza file, in px.
      * @param height          Altezza file, in px.
-     * @param is_downloadable
+     * @param isDownloadable
      * @param id
-     * @param content_hash
+     * @param contentHash
      */
-    public Media(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash, long width, long height) {
-        super(rev, size, path_lower, is_downloadable, name, tag, id, content_hash);
+    public Media(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash, long width, long height) {
+        super(rev, size, pathLower, isDownloadable, name, tag, id, contentHash);
         this.width = width;
         this.height = height;
     }
@@ -75,12 +75,12 @@ public class Media extends MultiMedia {
         return "Media{" +
                 ", rev='" + getRev() + '\'' +
                 ", size=" + getSize() + '\'' +
-                ", path_lower='" + getPath_lower() + '\'' +
+                ", path_lower='" + getPathLower() + '\'' +
                 ", is_downloadable=" + isDownloadable() + '\'' +
                 ", name='" + getName() + '\'' +
                 ", tag='" + getTag() + '\'' +
                 ", id='" + getId() + '\'' +
-                ", content_hash='" + getContent_hash() + '\'' +
+                ", content_hash='" + getContentHash() + '\'' +
                 "width='" + width + '\'' +
                 ", height='" + height + '\'' +
                 '}';

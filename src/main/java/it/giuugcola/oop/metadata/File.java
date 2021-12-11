@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
 /**
  * Classe figlio di MultiMedia
@@ -26,7 +26,7 @@ public class File extends MultiMedia {
      * @param id
      * @param is_downloadable
      */
-    public File(String rev, long size, String path_lower, boolean is_downloadable, String name, String tag, String id, String content_hash) {
-        super(rev, size, path_lower, is_downloadable, name, tag, id, content_hash);
+    public File(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash) {
+        super(rev, size, pathLower, isDownloadable, name, tag, id, contentHash);
     }
 }

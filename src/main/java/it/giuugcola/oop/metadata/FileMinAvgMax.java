@@ -1,4 +1,4 @@
-package it.giuugcola.OOPProject.metaData;
+package it.giuugcola.oop.metadata;
 
 import java.util.ArrayList;
 
