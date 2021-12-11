@@ -1,6 +1,6 @@
 package it.giuugcola.oop.metadata;
 
-public class Folder implements Metadata{
+public class Folder implements Metadata {
 
     private final String pathLower;
     private final String name;

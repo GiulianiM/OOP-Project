@@ -38,10 +38,10 @@ public class Media extends MultiMedia {
      * Eredita il costruttore super dalla classe {@link MultiMedia}
      * </p>
      *
-     * @param name            Nome del file.
-     * @param size            Dimensione del file.
-     * @param width           Larghezza file, in px.
-     * @param height          Altezza file, in px.
+     * @param name           Nome del file.
+     * @param size           Dimensione del file.
+     * @param width          Larghezza file, in px.
+     * @param height         Altezza file, in px.
      * @param isDownloadable
      * @param id
      * @param contentHash
@@ -72,17 +72,6 @@ public class Media extends MultiMedia {
 
     @Override
     public String toString() {
-        return "Media{" +
-                ", rev='" + getRev() + '\'' +
-                ", size=" + getSize() + '\'' +
-                ", path_lower='" + getPathLower() + '\'' +
-                ", is_downloadable=" + isDownloadable() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", tag='" + getTag() + '\'' +
-                ", id='" + getId() + '\'' +
-                ", content_hash='" + getContentHash() + '\'' +
-                "width='" + width + '\'' +
-                ", height='" + height + '\'' +
-                '}';
+        return "Media{" + ", rev='" + getRev() + '\'' + ", size=" + getSize() + '\'' + ", path_lower='" + getPathLower() + '\'' + ", is_downloadable=" + isDownloadable() + '\'' + ", name='" + getName() + '\'' + ", tag='" + getTag() + '\'' + ", id='" + getId() + '\'' + ", content_hash='" + getContentHash() + '\'' + "width='" + width + '\'' + ", height='" + height + '\'' + '}';
     }
 }

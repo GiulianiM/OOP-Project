@@ -292,7 +292,7 @@ class ControllerTest {
                                 ]
                             }
                         }"""),
-                Arguments.of(">,2.07", """
+                Arguments.of(">(2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],
@@ -300,7 +300,7 @@ class ControllerTest {
                                 "File": []
                             }
                         }"""),
-                Arguments.of("<,2.07", """
+                Arguments.of("<(2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],
@@ -308,7 +308,7 @@ class ControllerTest {
                                 "File": []
                             }
                         }"""),
-                Arguments.of(">=,2.07", """
+                Arguments.of(">=(2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],
@@ -321,7 +321,7 @@ class ControllerTest {
                                 ]
                             }
                         }"""),
-                Arguments.of("<=,2.07", """
+                Arguments.of("<=(2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],
@@ -334,7 +334,7 @@ class ControllerTest {
                                 ]
                             }
                         }"""),
-                Arguments.of("=,2.07", """
+                Arguments.of("=(2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],
@@ -347,7 +347,7 @@ class ControllerTest {
                                 ]
                             }
                         }"""),
-                Arguments.of("bt,2.07,2.07", """
+                Arguments.of("bt(2.07;2.07)", """
                         {
                             "Tipo_file": {
                                 "Foto": [],

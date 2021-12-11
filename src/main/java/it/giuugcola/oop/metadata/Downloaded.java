@@ -34,7 +34,7 @@ public class Downloaded {
                         jMultimedia.getId(),
                         jMultimedia.getContentHash()
                 ));
-            }else{
+            } else {
                 multimedia.add(new Media(
                         jMultimedia.getRev(),
                         jMultimedia.getSize(),
@@ -71,6 +71,7 @@ public class Downloaded {
                 return true;
         return false;
     }
+
     private boolean isFolderDownloaded(String id) {
         for (Folder f : this.folders)
             if (f.getId().equals(id))
@@ -81,6 +82,7 @@ public class Downloaded {
     public ArrayList<MultiMedia> getMultimedia() {
         return multimedia;
     }
+
     public ArrayList<Folder> getFolders() {
         return folders;
     }

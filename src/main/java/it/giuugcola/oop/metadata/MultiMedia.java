@@ -21,7 +21,7 @@ package it.giuugcola.oop.metadata;
  * @see java.lang.Long
  * @since 1.0
  */
-public abstract class MultiMedia implements Metadata{
+public abstract class MultiMedia implements Metadata {
 
     private final String rev;
     private final long size;
