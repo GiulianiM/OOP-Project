@@ -29,8 +29,8 @@ package it.giuugcola.oop.metadata;
 
 public class Media extends MultiMedia {
 
-    private final long width;
-    private final long height;
+    private final Long width;
+    private final Long height;
 
     /**
      * Costruttore della classe {@link Media}, per tipologie di file quali immagini o video.

@@ -26,11 +26,12 @@ public abstract class MultiMedia implements Metadata {
     private final String rev;
     private final long size;
     private final String pathLower;
-    private final boolean isDownloadable;
+    private final Boolean isDownloadable;
     private final String name;
     private final String tag;
     private final String id;
     private final String contentHash;
+    private final double MEGABYTE = 1024 * 1024;
 
     protected MultiMedia(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash) {
         this.rev = rev;
@@ -53,7 +54,7 @@ public abstract class MultiMedia implements Metadata {
     }
 
     public Double getSizeMB() {
-        double sizeMB = size / (double) 1048576;
+        double sizeMB = size / MEGABYTE;
         return Math.round(sizeMB * 100.0) / 100.0;
     }
 

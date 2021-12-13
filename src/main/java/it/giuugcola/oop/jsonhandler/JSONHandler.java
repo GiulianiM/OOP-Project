@@ -1,108 +1,62 @@
 package it.giuugcola.oop.jsonhandler;
 
-import it.giuugcola.oop.metadata.FileMinAvgMax;
+import it.giuugcola.oop.exceptions.ParsingToJsonException;
+import it.giuugcola.oop.metadata.Downloaded;
+import it.giuugcola.oop.metadata.MultiMedia;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 @SuppressWarnings("unchecked") //per i warning dei put nei JSONObject e JSONArray
 public class JSONHandler {
+    private static final long MEGABYTE = 1024L * 1024L;
 
-    //da Oggetto a Json
-    public static JSONObject toJson(Object text) {
+    public static JSONObject toJson(Object text) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
-        JSONObject jObjectRoot = null;
+        JSONObject jObjectRoot;
         try {
             jObjectRoot = (JSONObject) jParser.parse(text.toString());
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new ParsingToJsonException("Errore nel parametro 'text'");
         }
 
         return jObjectRoot;
     }
 
-    public static JSONObject toJsonStats(ArrayList<Map<String, String>> mapArray) {
-        Map<String, String> mapFiles = mapArray.get(0);
-        Map<String, String> mapPhotos = mapArray.get(1);
-        Map<String, String> mapVideos = mapArray.get(2);
+    public static JSONObject toJsonFiltered(Downloaded downloaded) {
+        JSONObject listRoot = new JSONObject(); //root
+        JSONObject listSubRoot = new JSONObject(); //sub-root
 
-        JSONObject list = new JSONObject(); //root
-        JSONObject fileList = new JSONObject(); //sub-root
+        listSubRoot.put("file", getEntriesAll(downloaded.getMultimedia(), "file"));
+        listSubRoot.put("photo", getEntriesAll(downloaded.getMultimedia(), "photo"));
+        listSubRoot.put("video", getEntriesAll(downloaded.getMultimedia(), "video"));
 
-        fileList.put("File", addFilesStats(mapFiles));
-        fileList.put("Foto", addFilesStats(mapPhotos));
-        fileList.put("Video", addFilesStats(mapVideos));
+        listRoot.put("Tipo_file", listSubRoot);
 
-        list.put("Tipo_file", fileList);
-
-        return list;
+        return listRoot;
     }
 
-    private static JSONArray addFilesStats(Map<String, String> map) {
-        JSONArray jsonArray = new JSONArray();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            JSONObject sizeName = new JSONObject();
-            sizeName.put("Name", entry.getKey());
-            sizeName.put("Size", entry.getValue());
-            jsonArray.add(sizeName);
+    public static JSONObject toJsonMinAvgMax(Downloaded downloaded, String tag) {
+        JSONObject root = new JSONObject();
+
+        //restituisco per tutti i tipi di file
+        if (tag.equals("")) {
+            root.put("photo", getEntriesMinAvgMax(downloaded, "photo"));
+            root.put("video", getEntriesMinAvgMax(downloaded, "video"));
+            root.put("file", getEntriesMinAvgMax(downloaded, "file"));
         }
+        //restituisco solo per il tipo richiesto
+        else
+            root.put(tag, getEntriesMinAvgMax(downloaded, tag));
 
-        return jsonArray;
+        return root;
     }
 
-    public static JSONObject toJsonMinAvgMax(FileMinAvgMax fileMinAvgMax) {
-        ArrayList<String> fileArrayList = fileMinAvgMax.getMinAvgMaxFile();
-        ArrayList<String> photoArrayList = fileMinAvgMax.getMinAvgMaxPhoto();
-        ArrayList<String> videoArrayList = fileMinAvgMax.getMinAvgMaxVideo();
-
-        JSONObject minAvgMax = new JSONObject(); // root
-        JSONObject fileList = new JSONObject();
-
-        fileList.put("File", addFilesMAM(fileArrayList));
-        fileList.put("Foto", addFilesMAM(photoArrayList));
-        fileList.put("Video", addFilesMAM(videoArrayList));
-
-        minAvgMax.put("Tipo_file", fileList);
-
-        return minAvgMax;
-    }
-
-    private static JSONObject addFilesMAM(ArrayList<String> fileList) {
-        JSONObject fileMin = new JSONObject();
-        JSONObject fileAvg = new JSONObject();
-        JSONObject fileMax = new JSONObject();
-        JSONObject fileMAM = new JSONObject();
-
-        String[] fileMinNameSize;
-        String[] fileMaxNameSize;
-
-        for (String s : fileList) {
-            if (s.contains(" ") && s.equals(fileList.get(0))) {
-                fileMinNameSize = s.split("\\s+");
-                fileMin.put("Name", fileMinNameSize[0]);
-                fileMin.put("Size", fileMinNameSize[1]);
-            }
-            if (s.contains(" ") && s.equals(fileList.get(2))) {
-                fileMaxNameSize = s.split("\\s+");
-                fileMax.put("Name", fileMaxNameSize[0]);
-                fileMax.put("Size", fileMaxNameSize[1]);
-            } else fileAvg.put("Size", s);
-        }
-
-        fileMAM.put("Min", fileMin);
-        fileMAM.put("Avg", fileAvg);
-        fileMAM.put("Max", fileMax);
-
-        return fileMAM;
-
-    }
-
-    public static void setJSONOfMultimedia(Object result, JSONOfMultimedia jMultimedia) {
+    public static void setJSONOfMultimedia(Object result, JSONOfMultimedia jMultimedia) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
 
         String tag;
@@ -139,11 +93,11 @@ public class JSONHandler {
             jMultimedia.setHeight(height);
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new ParsingToJsonException("Errore nel parametro 'result'");
         }
     }
 
-    public static void setJSONOfFolder(Object result, JSONOfFolder jFolder) {
+    public static void setJSONOfFolder(Object result, JSONOfFolder jFolder) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
 
         try {
@@ -159,9 +113,55 @@ public class JSONHandler {
 
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new ParsingToJsonException("Errore nel parametro 'result'");
         }
 
     }
 
+
+    private static JSONArray getEntriesMinAvgMax(Downloaded downloaded, String tag) {
+        JSONArray jArrayRoot = new JSONArray();
+
+        if (downloaded.isAtLeastOne(tag)) {
+            JSONObject minVal = new JSONObject();
+            minVal.put("Name", downloaded.getMinSizeName(tag));
+            minVal.put("Size", format(downloaded.getMinSize(tag)));
+
+            JSONObject maxVal = new JSONObject();
+            maxVal.put("Name", downloaded.getMaxSizeName(tag));
+            maxVal.put("Size", format(downloaded.getMaxSize(tag)));
+
+            JSONObject avgVal = new JSONObject();
+            avgVal.put("Size", format(downloaded.getAvgSize(tag)));
+
+            JSONObject jObjectRoot = new JSONObject();
+            jObjectRoot.put("min", minVal);
+            jObjectRoot.put("max", maxVal);
+            jObjectRoot.put("avg", avgVal);
+
+            jArrayRoot.add(jObjectRoot);
+            return jArrayRoot;
+
+        } else
+            return jArrayRoot;
+    }
+
+    private static JSONArray getEntriesAll(ArrayList<MultiMedia> multimedia, String tag) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (MultiMedia m : multimedia) {
+            if (m.getTag().equals(tag)) {
+                JSONObject sizeName = new JSONObject();
+                sizeName.put("Name", m.getName());
+                sizeName.put("Size", format(m.getSizeMB()));
+                jsonArray.add(sizeName);
+            }
+        }
+
+        return jsonArray;
+    }
+
+    private static String format(double size) {
+        return size + "MB";
+    }
 }

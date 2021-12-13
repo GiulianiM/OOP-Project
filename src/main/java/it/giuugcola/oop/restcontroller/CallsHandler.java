@@ -2,197 +2,83 @@ package it.giuugcola.oop.restcontroller;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.files.*;
-import it.giuugcola.oop.metadata.Downloaded;
-import it.giuugcola.oop.metadata.FileMinAvgMax;
-import it.giuugcola.oop.metadata.MultiMedia;
+import it.giuugcola.oop.exceptions.DropboxExceptions;
+import it.giuugcola.oop.exceptions.OutputStreamException;
 import it.giuugcola.oop.settings.DropboxClient;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Stream;
 
 public class CallsHandler {
 
     private static final String DOWNLOAD_FOLDER_PATH = "Downloads";
 
-    public static ListFolderResult listFolderRoot() {
-        ListFolderResult metadata = null;
+    public static ListFolderResult listFolder(String path) throws DropboxExceptions {
+        ListFolderResult metadata;
 
         try {
-            metadata = DropboxClient.getClient().files().listFolder("");
+            metadata = DropboxClient.client
+                    .files()
+                    .listFolder(path);
         } catch (DbxException e) {
-            e.printStackTrace();
+            throw new DropboxExceptions("Parametro 'path' incorretto");
         }
 
         return metadata;
     }
 
-    public static Metadata getMetadata(String path) {
-        Metadata metadata = null;
+    public static Metadata getMetadata(String path) throws DropboxExceptions {
+        Metadata metadata;
 
         try {
-            metadata = DropboxClient.getClient().files().getMetadata(path);
+            metadata = DropboxClient.client
+                    .files()
+                    .getMetadata(path);
         } catch (DbxException e) {
-            e.printStackTrace();
+            throw new DropboxExceptions("Parametro 'path' incorretto");
         }
 
         return metadata;
     }
 
-    public static FileMetadata downloadFile(String path) {
+    public static FileMetadata downloadFile(String path) throws DropboxExceptions, OutputStreamException {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path);
 
-        FileMetadata metadata = null;
+        FileMetadata metadata;
         try {
             OutputStream outputStream = new FileOutputStream(localDownloadPath);
-            metadata = DropboxClient.getClient()
+            metadata = DropboxClient.client
                     .files()
                     .downloadBuilder(path)
                     .download(outputStream);
             outputStream.close();
-        } catch (DbxException | IOException e) {
-            e.printStackTrace();
+        } catch (DbxException e) {
+            throw new DropboxExceptions("Parametro 'path' incorretto");
+        }catch (IOException e){
+            throw new OutputStreamException("Cartella dei download non trovata");
         }
 
         //Todo restituire una stringa nuccun chiù bell
         return metadata;
     }
 
-    public static DownloadZipResult downloadZip(String path) {
+    public static DownloadZipResult downloadZip(String path) throws DropboxExceptions, OutputStreamException {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH + "/" + getFileOrFolderName(path) + ".zip";
 
-        DownloadZipResult metadata = null;
+        DownloadZipResult metadata ;
         try {
             OutputStream outputStream = new FileOutputStream(localDownloadPath);
-            metadata = DropboxClient.getClient()
+            metadata = DropboxClient.client
                     .files()
                     .downloadZipBuilder(path)
                     .download(outputStream);
             outputStream.close();
-        } catch (DbxException | IOException e) {
-            e.printStackTrace();
+        } catch (DbxException e) {
+            throw new DropboxExceptions("Parametro 'path' incorretto");
+        }catch (IOException e){
+            throw new OutputStreamException("Cartella dei download non trovata");
         }
 
         return metadata;
-    }
-
-    public static FileMinAvgMax getMinAvgMax(ArrayList<Map<String, String>> mapArray) {
-        Map<String, String> mapFiles = mapArray.get(0); //Name, size
-        Map<String, String> mapPhotos = mapArray.get(1);
-        Map<String, String> mapVideos = mapArray.get(2);
-
-        FileMinAvgMax fileMinAvgMax = new FileMinAvgMax();
-
-        if (!Stream.of(mapFiles, mapPhotos, mapVideos).allMatch(Map::isEmpty)) {
-            mapStats(mapFiles, fileMinAvgMax, "file");
-            mapStats(mapPhotos, fileMinAvgMax, "photo");
-            mapStats(mapVideos, fileMinAvgMax, "video");
-        }
-
-        return fileMinAvgMax;
-    }
-
-    public static Downloaded getFiltered(Downloaded downloadList, String filter) {
-        ArrayList<MultiMedia> filteredFiles = new ArrayList<>();
-        final String regex = "[()]";
-        final String separator = ";";
-        final String between = "bt";
-
-        if (filter.contains("(") && filter.contains(")")) {
-            String[] fiterSplitted = filter.split(regex);
-            int count = StringUtils.countMatches(fiterSplitted[1], separator);
-            if (count == 0) {
-                Double compareValue = CallsHandler.checkInput(fiterSplitted[1]);
-                switch (fiterSplitted[0]) {
-                    case "<" -> {
-                        for (MultiMedia m : downloadList.getMultimedia()) {
-                            if (m.getSizeMB() < compareValue) filteredFiles.add(m);
-                        }
-                    }
-                    case ">" -> {
-                        for (MultiMedia m : downloadList.getMultimedia()) {
-                            if (m.getSizeMB() > compareValue) filteredFiles.add(m);
-                        }
-                    }
-                    case "<=" -> {
-                        for (MultiMedia m : downloadList.getMultimedia()) {
-                            if (m.getSizeMB() <= compareValue) filteredFiles.add(m);
-                        }
-                    }
-                    case ">=" -> {
-                        for (MultiMedia m : downloadList.getMultimedia()) {
-                            if (m.getSizeMB() >= compareValue) filteredFiles.add(m);
-                        }
-                    }
-                    case "=" -> {
-                        for (MultiMedia m : downloadList.getMultimedia()) {
-                            if (m.getSizeMB().equals(compareValue)) filteredFiles.add(m);
-                        }
-                    }
-                }
-            } else if (count == 1) {
-                String[] valueSplitted = fiterSplitted[1].split(separator);
-                if (fiterSplitted[0].equals(between)) {
-                    Double value1 = CallsHandler.checkInput(valueSplitted[0]);
-                    Double value2 = CallsHandler.checkInput(valueSplitted[1]);
-                    for (MultiMedia m : downloadList.getMultimedia()) {
-                        if (value2 >= m.getSizeMB() && value1 <= m.getSizeMB()) filteredFiles.add(m);
-                    }
-                } else System.out.println("Operatore non valido");
-            } else System.out.println("Filtro invalido");
-        } else if (filter.isEmpty()) {
-            return downloadList;
-        } else System.out.println("Non ci sono le parentesi");
-
-
-        return new Downloaded(filteredFiles);
-    }
-
-    //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto
-    private static Double checkInput(String str) {
-        System.out.println(str);
-        double value;
-        if (str.contains(".")) {
-            value = Double.parseDouble(str);
-        } else if (str.contains(",")) {
-            value = Double.parseDouble(str.replaceAll(",", "."));
-        } else {
-            value = Double.parseDouble(str.concat(".0"));
-        }
-        return value;
-    }
-
-    private static void mapStats(Map<String, String> map, FileMinAvgMax fileMinAvgMax, String type) {
-        System.out.println(map);
-        if (!map.isEmpty()) {
-            String[] types = {"file", "photo", "video"};
-            String min = Collections.min(map.values());
-            String max = Collections.max(map.values());
-            double sum = 0.0;
-
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                if (entry.getValue().equals(min)) min = entry.getKey() + " " + min;
-                if (entry.getValue().equals(max)) max = entry.getKey() + " " + max;
-                sum += Double.parseDouble(entry.getValue().substring(0, entry.getValue().length() - 2).replace(",", "."));
-            }
-            String avg = String.format("%.2f", sum / map.size()) + "MB";
-            if (type.equals(types[0])) {
-                fileMinAvgMax.getMinAvgMaxFile().add(min);
-                fileMinAvgMax.getMinAvgMaxFile().add(avg);
-                fileMinAvgMax.getMinAvgMaxFile().add(max);
-            } else if (type.equals(types[1])) {
-                fileMinAvgMax.getMinAvgMaxPhoto().add(min);
-                fileMinAvgMax.getMinAvgMaxPhoto().add(avg);
-                fileMinAvgMax.getMinAvgMaxPhoto().add(max);
-            } else if (type.equals(types[2])) {
-                fileMinAvgMax.getMinAvgMaxVideo().add(min);
-                fileMinAvgMax.getMinAvgMaxVideo().add(avg);
-                fileMinAvgMax.getMinAvgMaxVideo().add(max);
-            }
-        }
     }
 
     //Esempio input: /Images/AboutYesterday/Animals/dog.jpg
