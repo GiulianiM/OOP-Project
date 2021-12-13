@@ -15,7 +15,7 @@
 <a name="introduzione"></a>  
 ## Introduzione :blue_book:
 
-<img src="img/dB/MiniLogoBlu.png" alt="Icona Dropbox" width="88" height="88" style="float: right">
+<img align="right" src="img/dB/MiniLogoBlu.png" alt="Icona Dropbox" width="88" height="88" >
 
 L'applicazione SpringBoot qui pubblicata ha come scopo principale quello di scaricare file dal proprio account Dropbox, 
 mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview).  

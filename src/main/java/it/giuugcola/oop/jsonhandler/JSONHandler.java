@@ -1,8 +1,10 @@
 package it.giuugcola.oop.jsonhandler;
 
+import it.giuugcola.oop.exceptions.FilterJsonException;
 import it.giuugcola.oop.exceptions.ParsingToJsonException;
 import it.giuugcola.oop.metadata.Downloaded;
 import it.giuugcola.oop.metadata.MultiMedia;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 
 @SuppressWarnings("unchecked") //per i warning dei put nei JSONObject e JSONArray
 public class JSONHandler {
-    private static final long MEGABYTE = 1024L * 1024L;
 
     public static JSONObject toJson(Object text) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
@@ -27,31 +28,56 @@ public class JSONHandler {
         return jObjectRoot;
     }
 
-    public static JSONObject toJsonFiltered(Downloaded downloaded) {
+    public static JSONObject toJsonFiltered(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
         JSONObject listRoot = new JSONObject(); //root
         JSONObject listSubRoot = new JSONObject(); //sub-root
 
-        listSubRoot.put("file", getEntriesAll(downloaded.getMultimedia(), "file"));
-        listSubRoot.put("photo", getEntriesAll(downloaded.getMultimedia(), "photo"));
-        listSubRoot.put("video", getEntriesAll(downloaded.getMultimedia(), "video"));
+        //caso filtro e tag vuoti
+        if (filter.isEmpty() && tag.isEmpty()) {
+            listSubRoot.put("file", getEntriesAll(downloaded.getMultimedia(), "file"));
+            listSubRoot.put("photo", getEntriesAll(downloaded.getMultimedia(), "photo"));
+            listSubRoot.put("video", getEntriesAll(downloaded.getMultimedia(), "video"));
 
-        listRoot.put("Tipo_file", listSubRoot);
+            listRoot.put("Tipo_file", listSubRoot);
+        }
+        //caso tag vuoto
+        else if (!filter.isEmpty() && tag.isEmpty()) {
+            listSubRoot.put("file", getEntriesFiltered(downloaded, filter, "file"));
+            listSubRoot.put("photo", getEntriesFiltered(downloaded, filter, "photo"));
+            listSubRoot.put("video", getEntriesFiltered(downloaded, filter, "video"));
+
+            listRoot.put("Tipo_file", listSubRoot);
+        }
+        //caso filtro vuoto (tag è pieno)
+        else if (filter.isEmpty()) { //todo sono qui
+            listSubRoot.put(tag, getEntriesFiltered(downloaded, filter, tag));
+
+            listRoot.put("Tipo_file", listSubRoot);
+            //caso entrambi pieni
+        } else {
+            listSubRoot.put(tag, getEntriesFiltered(downloaded, filter, tag));
+
+            listRoot.put("Tipo_file", listSubRoot);
+        }
 
         return listRoot;
     }
 
     public static JSONObject toJsonMinAvgMax(Downloaded downloaded, String tag) {
         JSONObject root = new JSONObject();
+        JSONObject subRoot = new JSONObject();
 
         //restituisco per tutti i tipi di file
-        if (tag.equals("")) {
-            root.put("photo", getEntriesMinAvgMax(downloaded, "photo"));
-            root.put("video", getEntriesMinAvgMax(downloaded, "video"));
-            root.put("file", getEntriesMinAvgMax(downloaded, "file"));
+        if (tag.isEmpty()) {
+            subRoot.put("photo", getEntriesMinAvgMax(downloaded, "photo"));
+            subRoot.put("video", getEntriesMinAvgMax(downloaded, "video"));
+            subRoot.put("file", getEntriesMinAvgMax(downloaded, "file"));
         }
         //restituisco solo per il tipo richiesto
         else
-            root.put(tag, getEntriesMinAvgMax(downloaded, tag));
+            subRoot.put(tag, getEntriesMinAvgMax(downloaded, tag));
+
+        root.put("Tipo_file", subRoot);
 
         return root;
     }
@@ -118,7 +144,6 @@ public class JSONHandler {
 
     }
 
-
     private static JSONArray getEntriesMinAvgMax(Downloaded downloaded, String tag) {
         JSONArray jArrayRoot = new JSONArray();
 
@@ -135,15 +160,14 @@ public class JSONHandler {
             avgVal.put("Size", format(downloaded.getAvgSize(tag)));
 
             JSONObject jObjectRoot = new JSONObject();
-            jObjectRoot.put("min", minVal);
-            jObjectRoot.put("max", maxVal);
-            jObjectRoot.put("avg", avgVal);
+            jObjectRoot.put("Min", minVal);
+            jObjectRoot.put("Max", maxVal);
+            jObjectRoot.put("Avg", avgVal);
 
             jArrayRoot.add(jObjectRoot);
-            return jArrayRoot;
 
-        } else
-            return jArrayRoot;
+        }
+        return jArrayRoot;
     }
 
     private static JSONArray getEntriesAll(ArrayList<MultiMedia> multimedia, String tag) {
@@ -151,14 +175,137 @@ public class JSONHandler {
 
         for (MultiMedia m : multimedia) {
             if (m.getTag().equals(tag)) {
-                JSONObject sizeName = new JSONObject();
-                sizeName.put("Name", m.getName());
-                sizeName.put("Size", format(m.getSizeMB()));
-                jsonArray.add(sizeName);
+                jsonArray.add(addFile(m));
             }
         }
 
         return jsonArray;
+    }
+
+    private static JSONArray getEntriesFiltered(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
+        JSONArray jsonArray = new JSONArray();
+
+        if (filter.isEmpty() && !tag.isEmpty()) {
+            jsonArray = getEntriesAll(downloaded.getMultimedia(), tag);
+        } else {
+            if (filter.contains("(") && filter.contains(")")) {
+                final String regex = "[()]";
+                final String separator = ";";
+                final String between = "bt";
+                String[] fiterSplitted = filter.split(regex);
+                int count = StringUtils.countMatches(fiterSplitted[1], separator);
+                if (count == 0) {
+                    double compareValue = JSONHandler.checkInput(fiterSplitted[1]);
+                    if (tag.isEmpty()) {
+                        switch (fiterSplitted[0]) {
+                            case "lt" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getSizeMB() < compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "gt" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getSizeMB() > compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "lte" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getSizeMB() <= compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "gte" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getSizeMB() >= compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "e" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getSizeMB() == compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            default -> throw new FilterJsonException("Parametro 'filter' non corretto! Al massimo 1 numero fra parentesi tonde. ");
+                        }
+                    } else {
+                        switch (fiterSplitted[0]) {
+                            case "lt" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getTag().equals(tag) && m.getSizeMB() < compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "gt" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getTag().equals(tag) && m.getSizeMB() > compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "lte" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getTag().equals(tag) && m.getSizeMB() <= compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "gte" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getTag().equals(tag) && m.getSizeMB() >= compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            case "e" -> {
+                                for (MultiMedia m : downloaded.getMultimedia()) {
+                                    if (m.getTag().equals(tag) && m.getSizeMB() == compareValue)
+                                        jsonArray.add(addFile(m));
+                                }
+                            }
+                            default -> throw new FilterJsonException("Parametro 'filter' non corretto! Al massimo 1 numero fra parentesi tonde. ");
+                        }
+                    }
+                } else if (count == 1) {
+                    String[] valueSplitted = fiterSplitted[1].split(separator);
+                    if (fiterSplitted[0].equals(between)) {
+                        Double value1 = JSONHandler.checkInput(valueSplitted[0]);
+                        Double value2 = JSONHandler.checkInput(valueSplitted[1]);
+                        for (MultiMedia m : downloaded.getMultimedia()) {
+                            if (m.getTag().equals(tag) && value2 >= m.getSizeMB() && value1 <= m.getSizeMB())
+                                jsonArray.add(addFile(m));
+                        }
+                    } else
+                        throw new FilterJsonException("Parametro 'filter' non corretto! Operatore non valido. Prova con 'bt'");
+                } else
+                    throw new FilterJsonException("Parametro 'filter' non corretto! Inserire al massimo 2 numeri separati da un ';'");
+            } else
+                throw new FilterJsonException("Parametro 'filter' non corretto! Inserire i numeri all'interno delle parentesi tonde");
+        }
+        return jsonArray;
+    }
+
+    private static JSONObject addFile(MultiMedia m) {
+        JSONObject sizeName = new JSONObject();
+        sizeName.put("Name", m.getName());
+        sizeName.put("Size", format(m.getSizeMB()));
+        return sizeName;
+    }
+
+    //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto
+    private static Double checkInput(String str) throws FilterJsonException {
+        double value;
+        if (str.contains(".")) {
+            if (StringUtils.countMatches(str, ".") > 1)
+                throw new FilterJsonException("Parametro 'filter' non corretto! Inserire al massimo un punto");
+            value = Double.parseDouble(str);
+        } else if (str.contains(",")) {
+            if (StringUtils.countMatches(str, ",") > 1)
+                throw new FilterJsonException("Parametro 'filter' non corretto! Inserire al massimo una virgola");
+            value = Double.parseDouble(str.replaceAll(",", "."));
+        } else {
+            value = Double.parseDouble(str.concat(".0"));
+        }
+        return value;
     }
 
     private static String format(double size) {

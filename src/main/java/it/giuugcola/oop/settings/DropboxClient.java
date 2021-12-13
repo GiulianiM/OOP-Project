@@ -13,7 +13,7 @@ public class DropboxClient {
 
     public DropboxClient() throws DropboxExceptions {
         DbxRequestConfig config = DbxRequestConfig.newBuilder(clientIdentifier).build();
-        this.client = new DbxClientV2(config, APP_TOKEN);
+        client = new DbxClientV2(config, APP_TOKEN);
 
         try {
             client.users().getCurrentAccount();
@@ -21,4 +21,5 @@ public class DropboxClient {
             throw new DropboxExceptions("Parametri \"APP_TOKEN\" e/o \"clientIdentifier\" incorretti");
         }
     }
+
 }

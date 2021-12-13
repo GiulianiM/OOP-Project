@@ -3,9 +3,11 @@ package it.giuugcola.oop.restcontroller;
 import com.dropbox.core.v2.files.DownloadZipResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
+import it.giuugcola.oop.exceptions.DropboxExceptions;
+import it.giuugcola.oop.exceptions.FilterJsonException;
+import it.giuugcola.oop.exceptions.OutputStreamException;
+import it.giuugcola.oop.exceptions.ParsingToJsonException;
 import it.giuugcola.oop.jsonhandler.JSONHandler;
-import it.giuugcola.oop.metadata.FileMap;
-import it.giuugcola.oop.metadata.FileMinAvgMax;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,10 +20,13 @@ class ControllerTest {
 
     Controller test = new Controller();
 
+    ControllerTest() throws DropboxExceptions {
+    }
+
     @DisplayName("Test getDataPathName")
     @ParameterizedTest
     @MethodSource("provideStringsForGetDataPathName")
-    public void getDataPathName(String path, String json) {
+    public void getDataPathName(String path, String json) throws DropboxExceptions, ParsingToJsonException {
         Metadata result = CallsHandler.getMetadata(path);
         Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
     }
@@ -56,7 +61,7 @@ class ControllerTest {
     @DisplayName("Test getDataId")
     @ParameterizedTest
     @MethodSource("provideStringsForGetDataId")
-    public void getDataId(String id, String json) {
+    public void getDataId(String id, String json) throws DropboxExceptions, ParsingToJsonException {
         Metadata result = CallsHandler.getMetadata(id);
         Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
     }
@@ -91,7 +96,7 @@ class ControllerTest {
     @DisplayName("Test DownloadFile")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadFile")
-    public void downloadFile(String path, String json) {
+    public void downloadFile(String path, String json) throws OutputStreamException, DropboxExceptions, ParsingToJsonException {
         FileMetadata result = CallsHandler.downloadFile(path);
         test.getDownloaded().addMultimedia(result);
         Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
@@ -144,7 +149,7 @@ class ControllerTest {
     @DisplayName("Test DownloadZip")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadZip")
-    public void downloadZip(String path, String json) {
+    public void downloadZip(String path, String json) throws OutputStreamException, DropboxExceptions, ParsingToJsonException {
         DownloadZipResult result = CallsHandler.downloadZip(path);
         test.getDownloaded().addFolder(result);
         Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
@@ -179,14 +184,16 @@ class ControllerTest {
     @DisplayName("Test stats")
     @ParameterizedTest
     @MethodSource("provideStringsForStats")
-    public void stats(String stats) {
+    public void stats(String stats) throws OutputStreamException, DropboxExceptions, ParsingToJsonException, FilterJsonException {
         String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
         for (String str : paths) {
             FileMetadata result = CallsHandler.downloadFile(str);
             test.getDownloaded().addMultimedia(result);
         }
-        Assertions.assertFalse(JSONHandler.toJsonStats(new FileMap().populateMaps(test.getDownloaded())).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(stats), JSONHandler.toJsonStats(new FileMap().populateMaps(test.getDownloaded())));
+        String filter = "";
+        String tag = "";
+        Assertions.assertFalse(JSONHandler.toJsonFiltered(test.getDownloaded(), filter, tag).isEmpty());
+        Assertions.assertEquals(JSONHandler.toJson(stats), JSONHandler.toJsonFiltered(test.getDownloaded(), filter, tag));
     }
 
     private static Stream<Arguments> provideStringsForStats() {
@@ -194,170 +201,19 @@ class ControllerTest {
                 Arguments.of("""
                         {
                             "Tipo_file": {
-                                "Foto": [
+                            "file": [
                                     {
-                                        "Size": "0,03MB",
+                                        "Size": "2.07MB",
+                                        "Name": "sample_of_text.txt"
+                                    }
+                                ],
+                                "photo": [
+                                    {
+                                        "Size": "0.03MB",
                                         "Name": "Parrots.jpg"
                                     }
                                 ],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
-                            }
-                        }""")
-        );
-    }
-
-    @DisplayName("Test statsMAM")
-    @ParameterizedTest
-    @MethodSource("provideStringsForStatsMAM")
-    public void statsmmm(String statsMAM) {
-        String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
-        for (String str : paths) {
-            FileMetadata result = CallsHandler.downloadFile(str);
-            test.getDownloaded().addMultimedia(result);
-        }
-        FileMinAvgMax fileMinAvgMax = CallsHandler.getMinAvgMax(new FileMap().populateMaps(test.getDownloaded())); //{} deriva da populateMaps
-        Assertions.assertFalse(JSONHandler.toJsonMinAvgMax(fileMinAvgMax).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(statsMAM), JSONHandler.toJsonMinAvgMax(fileMinAvgMax));
-    }
-
-    private static Stream<Arguments> provideStringsForStatsMAM() {
-        return Stream.of(
-                Arguments.of("""
-                        {
-                            "Tipo_file": {
-                                "Foto": {
-                                    "Min": {
-                                        "Size": "0,03MB",
-                                        "Name": "Parrots.jpg"
-                                    },
-                                    "Avg": {
-                                        "Size": "0,03MB"
-                                    },
-                                    "Max": {
-                                        "Size": "0,03MB",
-                                        "Name": "Parrots.jpg"
-                                    }
-                                },
-                                "Video": {
-                                    "Min": {},
-                                    "Avg": {},
-                                    "Max": {}
-                                },
-                                "File": {
-                                    "Min": {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    },
-                                    "Avg": {
-                                        "Size": "2,07MB"
-                                    },
-                                    "Max": {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                }
-                            }
-                        }""")
-        );
-    }
-
-    @DisplayName("Test statsFiltered")
-    @ParameterizedTest
-    @MethodSource("provideStringsForStatsFiltered")
-    public void statsFiltered(String filter, String json) {
-        FileMetadata result = CallsHandler.downloadFile("/Documents/sample_of_text.txt");
-        test.getDownloaded().addMultimedia(result);
-        Assertions.assertFalse(JSONHandler.toJsonStats(new FileMap().populateMaps(CallsHandler.getFiltered(test.getDownloaded(), filter))).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJsonStats(new FileMap().populateMaps(CallsHandler.getFiltered(test.getDownloaded(), filter))));
-    }
-
-    private static Stream<Arguments> provideStringsForStatsFiltered() {
-        return Stream.of(
-                Arguments.of("", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
-                            }
-                        }"""),
-                Arguments.of(">(2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": []
-                            }
-                        }"""),
-                Arguments.of("<(2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": []
-                            }
-                        }"""),
-                Arguments.of(">=(2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
-                            }
-                        }"""),
-                Arguments.of("<=(2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
-                            }
-                        }"""),
-                Arguments.of("=(2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
-                            }
-                        }"""),
-                Arguments.of("bt(2.07;2.07)", """
-                        {
-                            "Tipo_file": {
-                                "Foto": [],
-                                "Video": [],
-                                "File": [
-                                    {
-                                        "Size": "2,07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ]
+                                "video": []
                             }
                         }""")
         );

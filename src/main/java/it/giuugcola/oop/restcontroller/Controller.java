@@ -5,6 +5,7 @@ import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
 import it.giuugcola.oop.exceptions.DropboxExceptions;
+import it.giuugcola.oop.exceptions.FilterJsonException;
 import it.giuugcola.oop.exceptions.OutputStreamException;
 import it.giuugcola.oop.exceptions.ParsingToJsonException;
 import it.giuugcola.oop.jsonhandler.JSONHandler;
@@ -17,13 +18,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class Controller {
     private Downloaded downloaded = new Downloaded();
+    @SuppressWarnings("unused")
     private DropboxClient client = new DropboxClient();
 
     public Controller() throws DropboxExceptions {
-    }
-
-    public Downloaded getDownloaded() {
-        return downloaded;
     }
 
     @RequestMapping("/")
@@ -63,21 +61,25 @@ public class Controller {
     }
 
     @PostMapping("/downloadZip")
-    public JSONObject downloadZip(@RequestParam(name = "path") String path) throws OutputStreamException, DropboxExceptions, ParsingToJsonException {
+    public JSONObject downloadZip(@RequestParam(name = "path") String path) throws OutputStreamException, DropboxExceptions, ParsingToJsonException  {
         DownloadZipResult result = CallsHandler.downloadZip(path);
         downloaded.addFolder(result);
         return JSONHandler.toJson(result);
     }
 
     //todo due parametri "type" e "filter" e unire con getFiltered
-    @GetMapping("/stats/getAll")
-    public JSONObject statsAll() {
-        return JSONHandler.toJsonFiltered(downloaded);
+    @GetMapping("/stats")
+    public JSONObject stats(@RequestParam(name = "filter", defaultValue = "") String filter, @RequestParam(name = "tag", defaultValue = "") String tag) throws FilterJsonException {
+        return JSONHandler.toJsonFiltered(downloaded, filter, tag);
     }
 
     @GetMapping("/stats/getMinAvgMax")
-    public JSONObject statsMinAvgMax(@RequestParam(name = "type", defaultValue = "") String type) {
-        return JSONHandler.toJsonMinAvgMax(downloaded, type);
+    public JSONObject statsMinAvgMax(@RequestParam(name = "tag", defaultValue = "") String tag) {
+        return JSONHandler.toJsonMinAvgMax(downloaded, tag);
     }
 
+    //per i test
+    public Downloaded getDownloaded() {
+        return downloaded;
+    }
 }
