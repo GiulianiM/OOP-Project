@@ -10,12 +10,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @SuppressWarnings("unchecked") //per i warning dei put nei JSONObject e JSONArray
 public class JSONHandler {
+    private static String[] tags = new String[] {"file", "photo", "video"};
+    private static String[] keys = new String[] {"name", "size", "min", "max", "avg"};
 
-    public static JSONObject toJson(Object text) throws ParsingToJsonException {
+    public static JSONObject objectToJson(Object text) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
         JSONObject jObjectRoot;
         try {
@@ -26,60 +30,6 @@ public class JSONHandler {
         }
 
         return jObjectRoot;
-    }
-
-    public static JSONObject toJsonFiltered(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
-        JSONObject listRoot = new JSONObject(); //root
-        JSONObject listSubRoot = new JSONObject(); //sub-root
-
-        //caso filtro e tag vuoti
-        if (filter.isEmpty() && tag.isEmpty()) {
-            listSubRoot.put("file", getEntriesAll(downloaded.getMultimedia(), "file"));
-            listSubRoot.put("photo", getEntriesAll(downloaded.getMultimedia(), "photo"));
-            listSubRoot.put("video", getEntriesAll(downloaded.getMultimedia(), "video"));
-
-            listRoot.put("Tipo_file", listSubRoot);
-        }
-        //caso tag vuoto
-        else if (!filter.isEmpty() && tag.isEmpty()) {
-            listSubRoot.put("file", getEntriesFiltered(downloaded, filter, "file"));
-            listSubRoot.put("photo", getEntriesFiltered(downloaded, filter, "photo"));
-            listSubRoot.put("video", getEntriesFiltered(downloaded, filter, "video"));
-
-            listRoot.put("Tipo_file", listSubRoot);
-        }
-        //caso filtro vuoto (tag è pieno)
-        else if (filter.isEmpty()) { //todo sono qui
-            listSubRoot.put(tag, getEntriesFiltered(downloaded, filter, tag));
-
-            listRoot.put("Tipo_file", listSubRoot);
-            //caso entrambi pieni
-        } else {
-            listSubRoot.put(tag, getEntriesFiltered(downloaded, filter, tag));
-
-            listRoot.put("Tipo_file", listSubRoot);
-        }
-
-        return listRoot;
-    }
-
-    public static JSONObject toJsonMinAvgMax(Downloaded downloaded, String tag) {
-        JSONObject root = new JSONObject();
-        JSONObject subRoot = new JSONObject();
-
-        //restituisco per tutti i tipi di file
-        if (tag.isEmpty()) {
-            subRoot.put("photo", getEntriesMinAvgMax(downloaded, "photo"));
-            subRoot.put("video", getEntriesMinAvgMax(downloaded, "video"));
-            subRoot.put("file", getEntriesMinAvgMax(downloaded, "file"));
-        }
-        //restituisco solo per il tipo richiesto
-        else
-            subRoot.put(tag, getEntriesMinAvgMax(downloaded, tag));
-
-        root.put("Tipo_file", subRoot);
-
-        return root;
     }
 
     public static void setJSONOfMultimedia(Object result, JSONOfMultimedia jMultimedia) throws ParsingToJsonException {
@@ -144,42 +94,49 @@ public class JSONHandler {
 
     }
 
-    private static JSONArray getEntriesMinAvgMax(Downloaded downloaded, String tag) {
-        JSONArray jArrayRoot = new JSONArray();
+    public static JSONObject filteredToJson(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
+        JSONObject listRoot = new JSONObject(); //root
+        JSONObject subRoot = new JSONObject(); //sub-root
 
-        if (downloaded.isAtLeastOne(tag)) {
-            JSONObject minVal = new JSONObject();
-            minVal.put("Name", downloaded.getMinSizeName(tag));
-            minVal.put("Size", format(downloaded.getMinSize(tag)));
-
-            JSONObject maxVal = new JSONObject();
-            maxVal.put("Name", downloaded.getMaxSizeName(tag));
-            maxVal.put("Size", format(downloaded.getMaxSize(tag)));
-
-            JSONObject avgVal = new JSONObject();
-            avgVal.put("Size", format(downloaded.getAvgSize(tag)));
-
-            JSONObject jObjectRoot = new JSONObject();
-            jObjectRoot.put("Min", minVal);
-            jObjectRoot.put("Max", maxVal);
-            jObjectRoot.put("Avg", avgVal);
-
-            jArrayRoot.add(jObjectRoot);
-
+        //caso filtro e tag vuoti
+        if (filter.isEmpty() && tag.isEmpty()) {
+            subRoot.put(tags[0], getEntriesAll(downloaded.getMultimedia(), tags[0]));
+            subRoot.put(tags[1], getEntriesAll(downloaded.getMultimedia(), tags[1]));
+            subRoot.put(tags[2], getEntriesAll(downloaded.getMultimedia(), tags[2]));
         }
-        return jArrayRoot;
+        //caso tag vuoto
+        else if (!filter.isEmpty() && tag.isEmpty()) {
+            subRoot.put(tags[0], getEntriesFiltered(downloaded, filter, tags[0]));
+            subRoot.put(tags[1], getEntriesFiltered(downloaded, filter, tags[1]));
+            subRoot.put(tags[2], getEntriesFiltered(downloaded, filter, tags[2]));
+        } else {
+            subRoot.put(tag, getEntriesFiltered(downloaded, filter, tag));
+        }
+
+        listRoot.put("request_time", getRequestDateTime());
+        listRoot.put("file_tag", subRoot);
+
+
+        return listRoot;
     }
 
-    private static JSONArray getEntriesAll(ArrayList<MultiMedia> multimedia, String tag) {
-        JSONArray jsonArray = new JSONArray();
-
-        for (MultiMedia m : multimedia) {
-            if (m.getTag().equals(tag)) {
-                jsonArray.add(addFile(m));
-            }
+    public static JSONObject minAvgMaxToJson(Downloaded downloaded, String tag) {
+        JSONObject listRoot = new JSONObject();
+        JSONObject subRoot = new JSONObject();
+        //restituisco per tutti i tipi di file
+        if (tag.isEmpty()) {
+            subRoot.put(tags[0], getEntriesMinAvgMax(downloaded, tags[0]));
+            subRoot.put(tags[1], getEntriesMinAvgMax(downloaded, tags[1]));
+            subRoot.put(tags[2], getEntriesMinAvgMax(downloaded, tags[2]));
         }
+        //restituisco solo per il tipo richiesto
+        else
+            subRoot.put(tag, getEntriesMinAvgMax(downloaded, tag));
 
-        return jsonArray;
+        listRoot.put("request_time", getRequestDateTime());
+        listRoot.put("file_tag", subRoot);
+
+        return listRoot;
     }
 
     private static JSONArray getEntriesFiltered(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
@@ -228,7 +185,7 @@ public class JSONHandler {
                                         jsonArray.add(addFile(m));
                                 }
                             }
-                            default -> throw new FilterJsonException("Parametro 'filter' non corretto! Al massimo 1 numero fra parentesi tonde. ");
+                            default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
                         }
                     } else {
                         switch (fiterSplitted[0]) {
@@ -262,14 +219,14 @@ public class JSONHandler {
                                         jsonArray.add(addFile(m));
                                 }
                             }
-                            default -> throw new FilterJsonException("Parametro 'filter' non corretto! Al massimo 1 numero fra parentesi tonde. ");
+                            default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
                         }
                     }
                 } else if (count == 1) {
                     String[] valueSplitted = fiterSplitted[1].split(separator);
                     if (fiterSplitted[0].equals(between)) {
-                        Double value1 = JSONHandler.checkInput(valueSplitted[0]);
-                        Double value2 = JSONHandler.checkInput(valueSplitted[1]);
+                        double value1 = JSONHandler.checkInput(valueSplitted[0]);
+                        double value2 = JSONHandler.checkInput(valueSplitted[1]);
                         for (MultiMedia m : downloaded.getMultimedia()) {
                             if (m.getTag().equals(tag) && value2 >= m.getSizeMB() && value1 <= m.getSizeMB())
                                 jsonArray.add(addFile(m));
@@ -284,15 +241,53 @@ public class JSONHandler {
         return jsonArray;
     }
 
+    private static JSONArray getEntriesMinAvgMax(Downloaded downloaded, String tag) {
+        JSONArray jArrayRoot = new JSONArray();
+
+        if (downloaded.isAtLeastOne(tag)) {
+            JSONObject minVal = new JSONObject();
+            minVal.put(keys[0], downloaded.getMinSizeName(tag));
+            minVal.put(keys[1], format(downloaded.getMinSize(tag)));
+
+            JSONObject maxVal = new JSONObject();
+            maxVal.put(keys[0], downloaded.getMaxSizeName(tag));
+            maxVal.put(keys[1], format(downloaded.getMaxSize(tag)));
+
+            JSONObject avgVal = new JSONObject();
+            avgVal.put(keys[1], format(downloaded.getAvgSize(tag)));
+
+            JSONObject jObjectRoot = new JSONObject();
+            jObjectRoot.put(keys[2], minVal);
+            jObjectRoot.put(keys[3], maxVal);
+            jObjectRoot.put(keys[4], avgVal);
+
+            jArrayRoot.add(jObjectRoot);
+
+        }
+        return jArrayRoot;
+    }
+
+    private static JSONArray getEntriesAll(ArrayList<MultiMedia> multimedia, String tag) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (MultiMedia m : multimedia) {
+            if (m.getTag().equals(tag)) {
+                jsonArray.add(addFile(m));
+            }
+        }
+
+        return jsonArray;
+    }
+
     private static JSONObject addFile(MultiMedia m) {
         JSONObject sizeName = new JSONObject();
-        sizeName.put("Name", m.getName());
-        sizeName.put("Size", format(m.getSizeMB()));
+        sizeName.put(keys[0], m.getName());
+        sizeName.put(keys[1], format(m.getSizeMB()));
         return sizeName;
     }
 
     //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto
-    private static Double checkInput(String str) throws FilterJsonException {
+    private static double checkInput(String str) throws FilterJsonException {
         double value;
         if (str.contains(".")) {
             if (StringUtils.countMatches(str, ".") > 1)
@@ -306,6 +301,12 @@ public class JSONHandler {
             value = Double.parseDouble(str.concat(".0"));
         }
         return value;
+    }
+
+    private static String getRequestDateTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return formatter.format(date);
     }
 
     private static String format(double size) {

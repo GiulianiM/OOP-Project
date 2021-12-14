@@ -8,22 +8,15 @@ import it.giuugcola.oop.jsonhandler.JSONOfMultimedia;
 import java.util.ArrayList;
 
 public class Downloaded {
-    private ArrayList<MultiMedia> multimedia;
+    private ArrayList<MultiMedia> multimedia = new ArrayList<>();
     private ArrayList<Folder> folders = new ArrayList<>();
 
-    public Downloaded(ArrayList<MultiMedia> multimedia) {
-        this.multimedia = new ArrayList<>(multimedia);
-    }
 
-    public Downloaded() {
-        this.multimedia = new ArrayList<>();
-    }
-
-    public void addMultimedia(Object result) throws ParsingToJsonException {
+    public boolean addMultimedia(Object result) throws ParsingToJsonException {
         JSONOfMultimedia jMultimedia = new JSONOfMultimedia();
         JSONHandler.setJSONOfMultimedia(result, jMultimedia);
 
-        if (this.multimedia.size() == 0 || !isMediaDownloaded(jMultimedia.getContentHash())) {
+        if (this.multimedia.isEmpty() || !isMediaDownloaded(jMultimedia.getContentHash())) {
             if (jMultimedia.getTag().equals("file")) {
                 multimedia.add(new File(
                         jMultimedia.getRev(),
@@ -49,20 +42,27 @@ public class Downloaded {
                         jMultimedia.getHeight()
                 ));
             }
+
+        }else{
+            return true;
         }
+        return false;
     }
 
-    public void addFolder(Object result) throws ParsingToJsonException {
+    public boolean addFolder(Object result) throws ParsingToJsonException {
         JSONOfFolder jFolder = new JSONOfFolder();
         JSONHandler.setJSONOfFolder(result, jFolder);
 
-        if (this.folders.size() == 0 || !isFolderDownloaded(jFolder.getId()))
+        if (this.folders.isEmpty() || !isFolderDownloaded(jFolder.getId())) {
             folders.add(new Folder(
                     jFolder.getPathLower(),
                     jFolder.getName(),
                     jFolder.getTag(),
                     jFolder.getId()
             ));
+            return true;
+        }
+        return false;
     }
 
     private boolean isMediaDownloaded(String contentHash) {
@@ -86,7 +86,6 @@ public class Downloaded {
     public ArrayList<Folder> getFolders() {
         return folders;
     }
-
 
 
     public boolean isAtLeastOne(String tag) {

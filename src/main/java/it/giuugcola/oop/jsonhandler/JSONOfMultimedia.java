@@ -12,13 +12,13 @@ public class JSONOfMultimedia implements JSONMetadata {
     private String contentHash;
     private String clientModified;
     private String tag;
-    private Long width;
-    private Long height;
+    private long width;
+    private long height;
 
 
     public JSONOfMultimedia(String pathDisplay, String rev, long size, String serverModified, String pathLower,
                             boolean isDownloadable, String name, String id, String contentHash,
-                            String clientModified, String tag, Long width, Long height) {
+                            String clientModified, String tag, long width, long height) {
         this.pathDisplay = pathDisplay;
         this.rev = rev;
         this.size = size;

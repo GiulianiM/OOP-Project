@@ -3,10 +3,7 @@ package it.giuugcola.oop.restcontroller;
 import com.dropbox.core.v2.files.DownloadZipResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
-import it.giuugcola.oop.exceptions.DropboxExceptions;
-import it.giuugcola.oop.exceptions.FilterJsonException;
-import it.giuugcola.oop.exceptions.OutputStreamException;
-import it.giuugcola.oop.exceptions.ParsingToJsonException;
+import it.giuugcola.oop.exceptions.*;
 import it.giuugcola.oop.jsonhandler.JSONHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +17,7 @@ class ControllerTest {
 
     Controller test = new Controller();
 
-    ControllerTest() throws DropboxExceptions {
+    ControllerTest() throws DropboxExceptions, FileException, ParsingToJsonException, DownloadExcepton {
     }
 
     @DisplayName("Test getDataPathName")
@@ -28,7 +25,7 @@ class ControllerTest {
     @MethodSource("provideStringsForGetDataPathName")
     public void getDataPathName(String path, String json) throws DropboxExceptions, ParsingToJsonException {
         Metadata result = CallsHandler.getMetadata(path);
-        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
+        Assertions.assertEquals(JSONHandler.objectToJson(json), JSONHandler.objectToJson(result));
     }
 
     private static Stream<Arguments> provideStringsForGetDataPathName() {
@@ -63,7 +60,7 @@ class ControllerTest {
     @MethodSource("provideStringsForGetDataId")
     public void getDataId(String id, String json) throws DropboxExceptions, ParsingToJsonException {
         Metadata result = CallsHandler.getMetadata(id);
-        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
+        Assertions.assertEquals(JSONHandler.objectToJson(json), JSONHandler.objectToJson(result));
     }
 
     private static Stream<Arguments> provideStringsForGetDataId() {
@@ -96,11 +93,11 @@ class ControllerTest {
     @DisplayName("Test DownloadFile")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadFile")
-    public void downloadFile(String path, String json) throws OutputStreamException, DropboxExceptions, ParsingToJsonException {
+    public void downloadFile(String path, String json) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException {
         FileMetadata result = CallsHandler.downloadFile(path);
         test.getDownloaded().addMultimedia(result);
-        Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(json), JSONHandler.toJson(result));
+        Assertions.assertFalse(JSONHandler.objectToJson(result).isEmpty());
+        Assertions.assertEquals(JSONHandler.objectToJson(json), JSONHandler.objectToJson(result));
     }
 
     private static Stream<Arguments> provideStringsForDownloadFile() {
@@ -149,11 +146,11 @@ class ControllerTest {
     @DisplayName("Test DownloadZip")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadZip")
-    public void downloadZip(String path, String json) throws OutputStreamException, DropboxExceptions, ParsingToJsonException {
+    public void downloadZip(String path, String json) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException {
         DownloadZipResult result = CallsHandler.downloadZip(path);
         test.getDownloaded().addFolder(result);
-        Assertions.assertFalse(JSONHandler.toJson(result).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(result), JSONHandler.toJson(json));
+        Assertions.assertFalse(JSONHandler.objectToJson(result).isEmpty());
+        Assertions.assertEquals(JSONHandler.objectToJson(result), JSONHandler.objectToJson(json));
     }
 
     private static Stream<Arguments> provideStringsForDownloadZip() {
@@ -184,7 +181,7 @@ class ControllerTest {
     @DisplayName("Test stats")
     @ParameterizedTest
     @MethodSource("provideStringsForStats")
-    public void stats(String stats) throws OutputStreamException, DropboxExceptions, ParsingToJsonException, FilterJsonException {
+    public void stats(String stats) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException, FilterJsonException {
         String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
         for (String str : paths) {
             FileMetadata result = CallsHandler.downloadFile(str);
@@ -192,8 +189,8 @@ class ControllerTest {
         }
         String filter = "";
         String tag = "";
-        Assertions.assertFalse(JSONHandler.toJsonFiltered(test.getDownloaded(), filter, tag).isEmpty());
-        Assertions.assertEquals(JSONHandler.toJson(stats), JSONHandler.toJsonFiltered(test.getDownloaded(), filter, tag));
+        Assertions.assertFalse(JSONHandler.filteredToJson(test.getDownloaded(), filter, tag).isEmpty());
+        Assertions.assertEquals(JSONHandler.objectToJson(stats), JSONHandler.filteredToJson(test.getDownloaded(), filter, tag));
     }
 
     private static Stream<Arguments> provideStringsForStats() {
