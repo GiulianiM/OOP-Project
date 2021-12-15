@@ -46,7 +46,7 @@ public class CallsHandler {
 
     public static FileMetadata downloadFile(String path) throws DropboxExceptions, DownloadExcepton, ParsingToJsonException {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH + getFileOrFolderName(path);
-        FileMetadata metadata = null;
+        FileMetadata metadata;
 
         if (isPathExist(path)) {
             try (OutputStream outputStream = new FileOutputStream(localDownloadPath)){
@@ -59,16 +59,17 @@ public class CallsHandler {
             } catch (IOException e) {
                 throw new DownloadExcepton("Cartella dei download non trovata");
             }
-        }
+        }else
+            throw new DownloadExcepton("Impossibile scaricare questo file!");
 
         return metadata;
     }
 
     public static DownloadZipResult downloadZip(String path) throws DropboxExceptions, DownloadExcepton, ParsingToJsonException {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH +  getFileOrFolderName(path) + ".zip";
-        DownloadZipResult metadata = null;
+        DownloadZipResult metadata;
 
-       if (isPathExist(path)) {
+       if (isPathExist(path) && isPathDownloadableAsZip(path) ) {
             try (OutputStream outputStream = new FileOutputStream(localDownloadPath)){
                 metadata = DropboxClient.client
                         .files()
@@ -79,19 +80,24 @@ public class CallsHandler {
             } catch (IOException e) {
                 throw new DownloadExcepton("Cartella dei download non trovata");
             }
-       }
+       }else
+           throw new DownloadExcepton("Impossibile scaricare questo file come zip!");
         return metadata;
     }
 
+
+    private static boolean isPathDownloadableAsZip(String path){
+        String d = getFileOrFolderName(path);
+        return !d.contains(".");
+    }
 
     private static boolean isPathExist(String path) throws DropboxExceptions, ParsingToJsonException {
         JSONParser jParser = new JSONParser();
         Metadata metadata = getMetadata(path);
         try {
             JSONObject jObject = (JSONObject) jParser.parse(metadata.toString());
-            if (jObject.get("path_lower").equals(path.toLowerCase())) {
+            if (jObject.get("path_lower").equals(path.toLowerCase()))
                 return true;
-            }
         } catch (ParseException e) {
             throw new ParsingToJsonException("Errore nel parsing!");
         }

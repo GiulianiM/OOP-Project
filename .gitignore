@@ -6,6 +6,7 @@ target/
 src/main/java/it/giuugcola/oop/jsonhandler/te.java
 /src/main/java/it/giuugcola/oop/restcontroller/CallsHandlerOLD.java
 /downloads/
+/log/
 
 ### STS ###
 .apt_generated

@@ -43,7 +43,6 @@ public class Downloaded {
                 ));
             }
 
-        }else{
             return true;
         }
         return false;
