@@ -14,11 +14,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-@SuppressWarnings("unchecked") //per i warning dei put nei JSONObject e JSONArray
+/**
+ * Classe che gestisce la lettura e la creazione dei JSON.
+ *
+ * @author Davide Colabella
+ * @author Matteo Giuliani
+ */
+@SuppressWarnings("unchecked")
 public class JSONHandler {
-    private static String[] tags = new String[] {"file", "photo", "video"};
-    private static String[] keys = new String[] {"name", "size", "min", "max", "avg"};
+    /**
+     * Array contenente tutti i tag possibili per un file scaricato.
+     */
+    private static String[] tags = new String[]{"file", "photo", "video"};
 
+    /**
+     * Array contenente le key da assegnare ai JSONObject e ai JSONArray.
+     */
+    private static String[] keys = new String[]{"name", "size", "min", "max", "avg"};
+
+    /**
+     * Metodo per la conversione di testo in JSON.
+     *
+     * @param text Stringa di testo.
+     * @return Restituisce text convertito in JSON.
+     * @throws ParsingToJsonException Se non è possibile creare il JSON.
+     */
     public static JSONObject objectToJson(Object text) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
         JSONObject jObjectRoot;
@@ -32,6 +52,13 @@ public class JSONHandler {
         return jObjectRoot;
     }
 
+    /**
+     * Crea il JSON di un oggetto {@link MultiMedia} con gli attributi di quest'ultimo.
+     *
+     * @param result      Oggetto di tipo {@link MultiMedia}.
+     * @param jMultimedia {@link JSONObject} da popolare con result.
+     * @throws ParsingToJsonException Se non è possibile creare il JSON.
+     */
     public static void setJSONOfMultimedia(Object result, JSONOfMultimedia jMultimedia) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
 
@@ -73,6 +100,13 @@ public class JSONHandler {
         }
     }
 
+    /**
+     * Crea il JSON di un oggetto {@link it.giuugcola.oop.metadata.Folder} con gli attributi di quest'ultimo.
+     *
+     * @param result  Oggetto di tipo {@link it.giuugcola.oop.metadata.Folder}.
+     * @param jFolder {@link JSONObject} da popolare con result.
+     * @throws ParsingToJsonException Se non è possibile creare il JSON.
+     */
     public static void setJSONOfFolder(Object result, JSONOfFolder jFolder) throws ParsingToJsonException {
         JSONParser jParser = new JSONParser();
 
@@ -94,6 +128,15 @@ public class JSONHandler {
 
     }
 
+    /**
+     * Crea il JSON di un oggetto {@link Downloaded} in base al filtro e al tag forniti.
+     *
+     * @param downloaded Oggetto di tipo {@link Downloaded}
+     * @param filter     Filtro da applicare.
+     * @param tag        Tipo di file.
+     * @return JSONObject.
+     * @throws FilterJsonException Se il filtro non è valido.
+     */
     public static JSONObject filteredToJson(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
         JSONObject listRoot = new JSONObject(); //root
         JSONObject subRoot = new JSONObject(); //sub-root
@@ -120,6 +163,13 @@ public class JSONHandler {
         return listRoot;
     }
 
+    /**
+     * Crea il JSON di un oggetto {@link Downloaded} suddividendo per tipo il minore, il maggiore e la dimensione media di tutti i file.
+     *
+     * @param downloaded Oggetto di tipo {@link Downloaded}
+     * @param tag        Tipo di file.
+     * @return JSONObject.
+     */
     public static JSONObject minAvgMaxToJson(Downloaded downloaded, String tag) {
         JSONObject listRoot = new JSONObject();
         JSONObject subRoot = new JSONObject();
@@ -139,6 +189,14 @@ public class JSONHandler {
         return listRoot;
     }
 
+    /**
+     * Metodo ausiliario di {@link #filteredToJson(Downloaded, String, String)}, popola un JSONArray.
+     *
+     * @param downloaded Oggetto di tipo {@link Downloaded}
+     * @param filter     Filtro da applicare.
+     * @param tag        Tipo di file.
+     * @return JSONArray.
+     */
     private static JSONArray getEntriesFiltered(Downloaded downloaded, String filter, String tag) throws FilterJsonException {
         JSONArray jsonArray = new JSONArray();
 
@@ -149,82 +207,15 @@ public class JSONHandler {
                 final String regex = "[()]";
                 final String separator = ";";
                 final String between = "bt";
-                String[] fiterSplitted = filter.split(regex);
-                int count = StringUtils.countMatches(fiterSplitted[1], separator);
+
+                String[] filterSplitted = filter.split(regex);
+                int count = StringUtils.countMatches(filterSplitted[1], separator);
                 if (count == 0) {
-                    double compareValue = JSONHandler.checkInput(fiterSplitted[1]);
-                    if (tag.isEmpty()) {
-                        switch (fiterSplitted[0]) {
-                            case "lt" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getSizeMB() < compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "gt" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getSizeMB() > compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "lte" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getSizeMB() <= compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "gte" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getSizeMB() >= compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "e" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getSizeMB() == compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
-                        }
-                    } else {
-                        switch (fiterSplitted[0]) {
-                            case "lt" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getTag().equals(tag) && m.getSizeMB() < compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "gt" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getTag().equals(tag) && m.getSizeMB() > compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "lte" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getTag().equals(tag) && m.getSizeMB() <= compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "gte" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getTag().equals(tag) && m.getSizeMB() >= compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            case "e" -> {
-                                for (MultiMedia m : downloaded.getMultimedia()) {
-                                    if (m.getTag().equals(tag) && m.getSizeMB() == compareValue)
-                                        jsonArray.add(addFile(m));
-                                }
-                            }
-                            default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
-                        }
-                    }
+                    double compareValue = JSONHandler.checkInput(filterSplitted[1]);
+                    checkSizeAndTag(downloaded, filterSplitted[0], compareValue, jsonArray, tag);
                 } else if (count == 1) {
-                    String[] valueSplitted = fiterSplitted[1].split(separator);
-                    if (fiterSplitted[0].equals(between)) {
+                    String[] valueSplitted = filterSplitted[1].split(separator);
+                    if (filterSplitted[0].equals(between)) {
                         double value1 = JSONHandler.checkInput(valueSplitted[0]);
                         double value2 = JSONHandler.checkInput(valueSplitted[1]);
                         for (MultiMedia m : downloaded.getMultimedia()) {
@@ -241,6 +232,13 @@ public class JSONHandler {
         return jsonArray;
     }
 
+    /**
+     * Metodo ausiliario di {@link #minAvgMaxToJson(Downloaded, String)}, popola un JSONArray
+     *
+     * @param downloaded Oggetto di tipo {@link Downloaded}
+     * @param tag        Tipo di file.
+     * @return JSONArray
+     */
     private static JSONArray getEntriesMinAvgMax(Downloaded downloaded, String tag) {
         JSONArray jArrayRoot = new JSONArray();
 
@@ -267,6 +265,13 @@ public class JSONHandler {
         return jArrayRoot;
     }
 
+    /**
+     * Metodo ausiliario di {@link #filteredToJson(Downloaded, String, String)}, popola un JSONArray.
+     *
+     * @param multimedia Oggetto di tipo {@link Downloaded}
+     * @param tag        Tipo di file.
+     * @return JSONArray
+     */
     private static JSONArray getEntriesAll(ArrayList<MultiMedia> multimedia, String tag) {
         JSONArray jsonArray = new JSONArray();
 
@@ -279,6 +284,12 @@ public class JSONHandler {
         return jsonArray;
     }
 
+    /**
+     * Metodo ausiliario di {@link #getEntriesFiltered(Downloaded, String, String)} e {@link #getEntriesAll(ArrayList, String)}, popola un JSONObject.
+     *
+     * @param m Oggetto di tipo {@link MultiMedia}.
+     * @return JSONObject.
+     */
     private static JSONObject addFile(MultiMedia m) {
         JSONObject sizeName = new JSONObject();
         sizeName.put(keys[0], m.getName());
@@ -286,7 +297,14 @@ public class JSONHandler {
         return sizeName;
     }
 
-    //Controllo presenza virgola, punto da input, se non presenti viene aggiunto il punto
+    /**
+     * Metodo che controlla la corretta formattazione della stringa fornita in input. Se questa presenta una
+     * virgola viene sostituita da un punto, mentre se entrambi sono assenti viene aggiunto ".0".
+     * <blockquote>Fornendo in input "3,0" otterremo "3.0", invece se forniamo "3" si riceve "3.0".</blockquote>
+     *
+     * @param str Stringa da controllare.
+     * @return Numero di tipo double estratto dalla stringa.
+     */
     private static double checkInput(String str) throws FilterJsonException {
         double value;
         if (str.contains(".")) {
@@ -303,13 +321,89 @@ public class JSONHandler {
         return value;
     }
 
+    /**
+     * Metodo ausiliario per ottenere la data attuale.
+     *
+     * @return String contenente la data formattata come "dd/MM/yyyy HH:mm:ss".
+     */
     private static String getRequestDateTime() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         return formatter.format(date);
     }
 
+    /**
+     * Metodo ausiliario di {@link #getEntriesFiltered(Downloaded, String, String)} per confrontare la dimensione e il tag di un file
+     * col filtro e il tag forniti dall'utente.
+     *
+     * @param downloaded   Oggetto {@link Downloaded} contenente tutti i file scaricati
+     * @param filter       Filtro ottenuto in input
+     * @param compareValue Dimensione da comparare
+     * @param jsonArray    Oggetto {@link JSONArray} a cui aggiungere il file
+     * @param tag          Tipo di file
+     * @throws FilterJsonException Se il parametro filter è errato
+     */
+    private static void checkSizeAndTag(Downloaded downloaded, String filter, Double compareValue, JSONArray jsonArray, String tag) throws FilterJsonException {
+        for (MultiMedia m : downloaded.getMultimedia()) {
+            if (tag.isEmpty()) {
+                switch (filter) {
+                    case "lt" -> {
+                        if (m.getSizeMB() < compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "gt" -> {
+                        if (m.getSizeMB() > compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "lte" -> {
+                        if (m.getSizeMB() <= compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "gte" -> {
+                        if (m.getSizeMB() >= compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "e" -> {
+                        if (m.getSizeMB() == compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
+                }
+            } else {
+                switch (filter) {
+                    case "lt" -> {
+                        if (m.getTag().equals(tag) && m.getSizeMB() < compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "gt" -> {
+                        if (m.getTag().equals(tag) && m.getSizeMB() > compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "lte" -> {
+                        if (m.getTag().equals(tag) && m.getSizeMB() <= compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "gte" -> {
+                        if (m.getTag().equals(tag) && m.getSizeMB() >= compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    case "e" -> {
+                        if (m.getTag().equals(tag) && m.getSizeMB() == compareValue)
+                            jsonArray.add(addFile(m));
+                    }
+                    default -> throw new FilterJsonException("Parametro 'filter' non corretto!");
+                }
+            }
+        }
+    }
+
+    /**
+     * Metodo ausiliario per aggiungere MB a un numero.
+     *
+     * @param size numero double.
+     * @return String contenente size + MB.
+     */
     private static String format(double size) {
-        return size + "MB";
+        return String.format("%.2f", size)+"MB";
     }
 }

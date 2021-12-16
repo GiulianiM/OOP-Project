@@ -1,35 +1,22 @@
 package it.giuugcola.oop.metadata;
 
 /**
- * Classe figlio di {@code MultiMedia}, esempi di come si può utilizzare {@code Media}:
- * <blockquote><pre>
- *     Media fileImg =
- *     new Media("parrots.img", "/Images", 7200, 1300, 500);
- *     System.out.prlongln(fileImg)
- *     fileImg.getWidth();
- *     fileImg.getHeight();
- * </pre></blockquote>
- * Possiamo anche utilizzare i metodi ereditati quali:
- * <blockquote><pre>
- *     fileImg.getName();
- *     fileImg.getPath();
- *     fileImg.getSize();
- * </pre></blockquote>
- * <p>
- * La classe Media contiene anche metodi basilari quali i getter per ogni suo parametro:
- * {@code name, path, size}; un metodo toString per la stampa a schermo
- * delle caratteristiche del file.
+ * Classe figlio di {@code MultiMedia}, specifica per i file multimediali quali video e foto.
  *
  * @author Davide Colabella
- * @implNote
+ * @author Matteo Giuliani
  * @see MultiMedia
- * @see java.lang
- * @since 1.0
  */
-
 public class Media extends MultiMedia {
 
+    /**
+     * Larghezza immagine/video in pixel.
+     */
     private final long width;
+
+    /**
+     * Altezza immagine/video in pixel.
+     */
     private final long height;
 
     /**
@@ -42,9 +29,9 @@ public class Media extends MultiMedia {
      * @param size           Dimensione del file.
      * @param width          Larghezza file, in px.
      * @param height         Altezza file, in px.
-     * @param isDownloadable
-     * @param id
-     * @param contentHash
+     * @param isDownloadable Se il file può essere scaricato.
+     * @param id             Id univoco del file.
+     * @param contentHash    Hash univoco del file.
      */
     public Media(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash, long width, long height) {
         super(rev, size, pathLower, isDownloadable, name, tag, id, contentHash);
@@ -53,7 +40,7 @@ public class Media extends MultiMedia {
     }
 
     /**
-     * Metodo get per ottenere la Larghezza di un file.
+     * Getter per ottenere la Larghezza di un file.
      *
      * @return Larghezza file in px
      */
@@ -62,7 +49,7 @@ public class Media extends MultiMedia {
     }
 
     /**
-     * Metodo get per ottenere l'Altezza di un file.
+     * Getter per ottenere l'Altezza di un file.
      *
      * @return Altezza file in px
      */

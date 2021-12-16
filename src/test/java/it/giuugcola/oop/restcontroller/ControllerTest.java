@@ -17,7 +17,7 @@ class ControllerTest {
 
     Controller test = new Controller();
 
-    ControllerTest() throws DropboxExceptions, FileException, ParsingToJsonException, DownloadExcepton {
+    ControllerTest() throws DropboxExceptions, FileException, ParsingToJsonException, DownloadException {
     }
 
     @DisplayName("Test getDataPathName")
@@ -93,7 +93,7 @@ class ControllerTest {
     @DisplayName("Test DownloadFile")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadFile")
-    public void downloadFile(String path, String json) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException {
+    public void downloadFile(String path, String json) throws DownloadException, DropboxExceptions, ParsingToJsonException {
         FileMetadata result = CallsHandler.downloadFile(path);
         test.getDownloaded().addMultimedia(result);
         Assertions.assertFalse(JSONHandler.objectToJson(result).isEmpty());
@@ -146,7 +146,7 @@ class ControllerTest {
     @DisplayName("Test DownloadZip")
     @ParameterizedTest
     @MethodSource("provideStringsForDownloadZip")
-    public void downloadZip(String path, String json) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException {
+    public void downloadZip(String path, String json) throws DownloadException, DropboxExceptions, ParsingToJsonException {
         DownloadZipResult result = CallsHandler.downloadZip(path);
         test.getDownloaded().addFolder(result);
         Assertions.assertFalse(JSONHandler.objectToJson(result).isEmpty());
@@ -173,44 +173,6 @@ class ControllerTest {
                                 "name": "Documents",
                                 ".tag": "folder",
                                 "id": "id:DsnniHqkdCgAAAAAAAAACQ"
-                            }
-                        }""")
-        );
-    }
-
-    @DisplayName("Test stats")
-    @ParameterizedTest
-    @MethodSource("provideStringsForStats")
-    public void stats(String stats) throws DownloadExcepton, DropboxExceptions, ParsingToJsonException, FilterJsonException {
-        String[] paths = {"/Images/Parrots.jpg", "/Documents/sample_of_text.txt"};
-        for (String str : paths) {
-            FileMetadata result = CallsHandler.downloadFile(str);
-            test.getDownloaded().addMultimedia(result);
-        }
-        String filter = "";
-        String tag = "";
-        Assertions.assertFalse(JSONHandler.filteredToJson(test.getDownloaded(), filter, tag).isEmpty());
-        Assertions.assertEquals(JSONHandler.objectToJson(stats), JSONHandler.filteredToJson(test.getDownloaded(), filter, tag));
-    }
-
-    private static Stream<Arguments> provideStringsForStats() {
-        return Stream.of(
-                Arguments.of("""
-                        {
-                            "Tipo_file": {
-                            "file": [
-                                    {
-                                        "Size": "2.07MB",
-                                        "Name": "sample_of_text.txt"
-                                    }
-                                ],
-                                "photo": [
-                                    {
-                                        "Size": "0.03MB",
-                                        "Name": "Parrots.jpg"
-                                    }
-                                ],
-                                "video": []
                             }
                         }""")
         );

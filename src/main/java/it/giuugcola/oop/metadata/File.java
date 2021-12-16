@@ -7,11 +7,9 @@ package it.giuugcola.oop.metadata;
  * </p>
  *
  * @author Davide Colabella
- * @implNote
+ * @author Matteo Giulinai
  * @see MultiMedia
- * @since 1.0
  */
-
 public class File extends MultiMedia {
 
     /**
@@ -20,11 +18,14 @@ public class File extends MultiMedia {
      * Richiama il costruttore della classe padre {@link MultiMedia}.
      * </p>
      *
-     * @param name            Nome del file.
-     * @param size            Dimensione del file.
-     * @param content_hash
-     * @param id
-     * @param is_downloadable
+     * @param rev Rev univoco del file.
+     * @param size Dimensione in byte del file.
+     * @param pathLower Percorso lowercase del file.
+     * @param isDownloadable Se il file è scaricabile.
+     * @param name Nome del file.
+     * @param tag Tag del file.
+     * @param id Id univoco del file.
+     * @param contentHash Hash univoco del file.
      */
     public File(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash) {
         super(rev, size, pathLower, isDownloadable, name, tag, id, contentHash);

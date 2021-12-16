@@ -7,11 +7,29 @@ import it.giuugcola.oop.jsonhandler.JSONOfMultimedia;
 
 import java.util.ArrayList;
 
+/**
+ * Classe per la gestione dei file e delle cartelle scaricate.
+ *
+ * @author Davide Colabella
+ * @author Matteo Giuliani
+ */
 public class Downloaded {
+    /**
+     * Arraylist contenente i file scaricati convertiti in oggetti {@link MultiMedia}.
+     */
     private ArrayList<MultiMedia> multimedia = new ArrayList<>();
+
+    /**
+     * Arraylist contenente le cartelle scaricate convertite in oggetti {@link Folder}.
+     */
     private ArrayList<Folder> folders = new ArrayList<>();
 
-
+    /**
+     * Metodo per l'aggiunta di oggetti {@link MultiMedia} all'arraylist dell'oggetto.
+     *
+     * @param result Oggetto Multimedia da aggiungere.
+     * @return Esito dell'aggiunta.
+     */
     public boolean addMultimedia(Object result) throws ParsingToJsonException {
         JSONOfMultimedia jMultimedia = new JSONOfMultimedia();
         JSONHandler.setJSONOfMultimedia(result, jMultimedia);
@@ -48,6 +66,12 @@ public class Downloaded {
         return false;
     }
 
+    /**
+     * Metodo per l'aggiunta di oggetti {@link Folder} all'arraylist dell'oggetto.
+     *
+     * @param result Oggetto Folder da aggiungere.
+     * @return Esito dell'aggiunta.
+     */
     public boolean addFolder(Object result) throws ParsingToJsonException {
         JSONOfFolder jFolder = new JSONOfFolder();
         JSONHandler.setJSONOfFolder(result, jFolder);
@@ -64,6 +88,12 @@ public class Downloaded {
         return false;
     }
 
+    /**
+     * Metodo ausiliario di {@link #addMultimedia(Object)}, per verificare se il file sia già stato scaricato.
+     *
+     * @param contentHash Hash univoco del file.
+     * @return Esito del confronto.
+     */
     private boolean isMediaDownloaded(String contentHash) {
         for (MultiMedia m : this.multimedia)
             if (m.getContentHash().equals(contentHash))
@@ -71,6 +101,12 @@ public class Downloaded {
         return false;
     }
 
+    /**
+     * Metodo ausiliario di {@link #addFolder(Object)}, per verificare se la cartella sia già stata scaricata.
+     *
+     * @param id Id univoco del file.
+     * @return Esito del confronto.
+     */
     private boolean isFolderDownloaded(String id) {
         for (Folder f : this.folders)
             if (f.getId().equals(id))
@@ -78,15 +114,30 @@ public class Downloaded {
         return false;
     }
 
+    /**
+     * Getter dell'arraylist di {@link MultiMedia} di {@link Downloaded}
+     *
+     * @return Arraylist di Multimedia dell'oggetto.
+     */
     public ArrayList<MultiMedia> getMultimedia() {
         return multimedia;
     }
 
+    /**
+     * Getter dell'arraylist di {@link Folder} di {@link Downloaded}
+     *
+     * @return Arraylist di Folder dell'oggetto.
+     */
     public ArrayList<Folder> getFolders() {
         return folders;
     }
 
-
+    /**
+     * Metodo ausiliario per controllare se esista almeno un file scaricato del tipo specificato.
+     *
+     * @param tag Tipo di file.
+     * @return Esito del controllo.
+     */
     public boolean isAtLeastOne(String tag) {
         for (MultiMedia m : multimedia)
             if (m.getTag().equals(tag))
@@ -94,6 +145,12 @@ public class Downloaded {
         return false;
     }
 
+    /**
+     * Metodo ausiliario per ottenere la dimensione massimo dei file scaricati in base al tipo.
+     *
+     * @param tag Tipo di file.
+     * @return Dimensione del file più grande.
+     */
     public Double getMaxSize(String tag) {
         double size = 0d;
         for (MultiMedia m : multimedia)
@@ -104,8 +161,21 @@ public class Downloaded {
         return size;
     }
 
+    /**
+     * Metodo ausiliario per ottenere la dimensione minima dei file scaricati in base al tipo.
+     *
+     * @param tag Tipo di file.
+     * @return Dimensione del file più piccolo.
+     */
     public Double getMinSize(String tag) {
-        double size = multimedia.get(0).getSizeMB();
+        double size = 0;
+        for (MultiMedia m : multimedia) {
+            if (m.getTag().equals(tag)) {
+                size = m.getSizeMB();
+                break;
+            }
+        }
+
         for (MultiMedia m : multimedia)
             if (m.getTag().equals(tag) && m.getSizeMB() < size)
                 size = m.getSizeMB();
@@ -113,6 +183,12 @@ public class Downloaded {
         return size;
     }
 
+    /**
+     * Metodo ausiliario per ottenere la dimensione media dei file scaricati in base al tipo.
+     *
+     * @param tag Tipo di file.
+     * @return Dimensione media dei file.
+     */
     public Double getAvgSize(String tag) {
         double size = 0;
         int cont = 0;
@@ -125,6 +201,12 @@ public class Downloaded {
         return size / cont;
     }
 
+    /**
+     * Metodo ausiliario per ottenere il nome del file più grande in base al tipo.
+     *
+     * @param tag Tipo del file.
+     * @return Nome del file.
+     */
     public String getMaxSizeName(String tag) {
         String name = null;
         long size = 0;
@@ -138,9 +220,22 @@ public class Downloaded {
         return name;
     }
 
+    /**
+     * Metodo ausiliario per ottenere il nome del file più piccolo in base al tipo.
+     *
+     * @param tag Tipo del file.
+     * @return Nome del file.
+     */
     public String getMinSizeName(String tag) {
         String name = null;
-        long size = multimedia.get(0).getSize();
+        long size = 0;
+
+        for (MultiMedia m : multimedia) {
+            if (m.getTag().equals(tag)) {
+                size = m.getSize();
+                break;
+            }
+        }
 
         for (MultiMedia m : multimedia)
             if (m.getTag().equals(tag) && m.getSize() <= size) {

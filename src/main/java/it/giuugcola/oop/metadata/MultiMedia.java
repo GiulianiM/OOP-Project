@@ -1,38 +1,65 @@
 package it.giuugcola.oop.metadata;
 
 /**
- * Classe astratta, esempi di come si può utilizzare {@code MultiMedia}:
- * <blockquote><pre>
- *     MultiMedia fileTxt =
- *     new MultiMedia("sample.txt", "/Documents", 7200);
- *     System.out.println(fileTxt)
- *     fileTxt.getName();
- *     fileTxt.getPath();
- *     fileTxt.getSize();
- * </pre></blockquote>
- * La classe MultiMedia contiene anche metodi basilari quali i getter per ogni suo parametro:
- * {@code name, path, size}; un metodo toString per la stampa a schermo
- * delle caratteristiche del file.
+ * Classe per la gestione dei file multimediali scaricati.
  *
  * @author Davide Colabella
- * @implNote
- * @see java.lang.String
- * @see java.lang.Integer
- * @see java.lang.Long
- * @since 1.0
+ * @author Matteo Giuliani
  */
 public class MultiMedia implements Metadata {
 
+    /**
+     * Rev univoco del file.
+     */
     private final String rev;
-    private final long size;
-    private final String pathLower;
-    private final boolean isDownloadable;
-    private final String name;
-    private final String tag;
-    private final String id;
-    private final String contentHash;
-    private final double MEGABYTE = 1024 * 1024;
 
+    /**
+     * Dimensione del file in byte.
+     */
+    private final long size;
+
+    /**
+     * Percorso lowercase del file.
+     */
+    private final String pathLower;
+
+    /**
+     * Se il file è scaricabile.
+     */
+    private final boolean isDownloadable;
+
+    /**
+     * Nome del file.
+     */
+    private final String name;
+
+    /**
+     * Tag del file.
+     */
+    private final String tag;
+
+    /**
+     * Id univoco del file.
+     */
+    private final String id;
+
+    /**
+     * Hash univoco del file.
+     */
+    private final String contentHash;
+
+    /**
+     * Costruttore di {@link MultiMedia}.
+     *
+     * @param rev            Rev univoco del file.
+     * @param size           Dimensione in byte del file.
+     * @param pathLower      Percorso lowercase del file.
+     * @param isDownloadable Se il file è scaricabile.
+     * @param name           Nome del file.
+     * @param tag            Tag del file.
+     * @param id             Id univoco del file.
+     * @param contentHash    Hash univoco del file.
+     */
     protected MultiMedia(String rev, long size, String pathLower, boolean isDownloadable, String name, String tag, String id, String contentHash) {
         this.rev = rev;
         this.size = size;
@@ -44,16 +71,28 @@ public class MultiMedia implements Metadata {
         this.contentHash = contentHash;
     }
 
-
+    /**
+     * Getter di Rev.
+     * @return Rev del file
+     */
     public String getRev() {
         return rev;
     }
 
+    /**
+     * Getter di size.
+     * @return Dimensione del file
+     */
     public long getSize() {
         return size;
     }
 
-    public Double getSizeMB() {
+    /**
+     * Metodo ausiliario per convertire la dimensione da byte in MB.
+     * @return Size in MB
+     */
+    public double getSizeMB() {
+        double MEGABYTE = 1024 * 1024;
         double sizeMB = size / MEGABYTE;
         return Math.round(sizeMB * 100.0) / 100.0;
     }
@@ -62,6 +101,10 @@ public class MultiMedia implements Metadata {
         return pathLower;
     }
 
+    /**
+     * Getter di isDownloadable.
+     * @return isDownloadable
+     */
     public boolean isDownloadable() {
         return isDownloadable;
     }
@@ -78,10 +121,13 @@ public class MultiMedia implements Metadata {
         return id;
     }
 
+    /**
+     * Getter di hash.
+     * @return Hash del file.
+     */
     public String getContentHash() {
         return contentHash;
     }
-
 
     @Override
     public String toString() {

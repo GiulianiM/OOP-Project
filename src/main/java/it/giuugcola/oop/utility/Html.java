@@ -1,7 +1,15 @@
 package it.giuugcola.oop.utility;
 
+/**
+ * Classe per passare codice html come stringhe.
+ */
 public class Html {
 
+    /**
+     * Codice html della home page.
+     *
+     * @return Stringa contenente il codice html
+     */
     public static String homePage() {
         return """
                 <!DOCTYPE html>
