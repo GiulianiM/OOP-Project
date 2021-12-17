@@ -13,7 +13,7 @@ class DownloadExceptionTest {
     @DisplayName("Test DownloadException")
     @ParameterizedTest
     @ValueSource(strings = {"/Images/parrots.jpg"})
-    public void whenExceptionThrown_thenAssertionSucceeds(String path) throws ParsingToJsonException, FileException, DropboxExceptions {
+    public void whenExceptionThrown_thenAssertionSucceeds(String path) throws ParsingToJsonException, FileException, DropboxExceptions, DownloadException {
         Controller test = new Controller();
         Exception exception = assertThrows(DownloadException.class, () -> {
             CallsHandler.downloadZip(path);

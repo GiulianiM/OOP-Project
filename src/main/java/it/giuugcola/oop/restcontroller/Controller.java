@@ -42,8 +42,7 @@ public class Controller {
      */
     private OutputOnFile outOnFile = new OutputOnFile();
 
-    public Controller() throws DropboxExceptions, FileException, ParsingToJsonException {
-        // TODO document why this constructor is empty
+    public Controller() throws DropboxExceptions, FileException, ParsingToJsonException, DownloadException {
     }
 
     /**

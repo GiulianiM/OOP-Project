@@ -40,7 +40,7 @@ public class CallsHandler {
                     .files()
                     .listFolder(path);
         } catch (DbxException e) {
-            throw new DropboxExceptions("Parametro 'path' incorretto");
+            throw new DropboxExceptions("Parametro 'path' incorretto o inesistente!");
         }
 
         return metadata;
@@ -61,7 +61,7 @@ public class CallsHandler {
                     .files()
                     .getMetadata(path);
         } catch (DbxException e) {
-            throw new DropboxExceptions("Parametro 'path' incorretto!");
+            throw new DropboxExceptions("Parametro incorretto!");
         }
 
         return metadata;
@@ -79,6 +79,7 @@ public class CallsHandler {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH + getFileOrFolderName(path);
         FileMetadata metadata;
 
+        checkFolderExist();
         if (isPathExist(path)) {
             try (OutputStream outputStream = new FileOutputStream(localDownloadPath)) {
                 metadata = DropboxClient.client
@@ -96,6 +97,7 @@ public class CallsHandler {
         return metadata;
     }
 
+
     /**
      * Percorso per scaricare cartelle intere come zip.
      *
@@ -108,6 +110,7 @@ public class CallsHandler {
         String localDownloadPath = DOWNLOAD_FOLDER_PATH + getFileOrFolderName(path) + ".zip";
         DownloadZipResult metadata;
 
+        checkFolderExist();
         if (isPathExist(path) && isPathDownloadableAsZip(path)) {
             try (OutputStream outputStream = new FileOutputStream(localDownloadPath)) {
                 metadata = DropboxClient.client
@@ -122,6 +125,17 @@ public class CallsHandler {
         } else
             throw new DownloadException("Impossibile scaricare questo file come zip!");
         return metadata;
+    }
+
+    /**
+     * Controlla l'esistenza o meno della directory per il download.
+     * Se non esiste allora viene creata
+     */
+    private static void checkFolderExist() {
+        File directory = new File(DOWNLOAD_FOLDER_PATH.substring(0, DOWNLOAD_FOLDER_PATH.length()-1));
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
     }
 
     /**

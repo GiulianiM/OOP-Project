@@ -1,5 +1,6 @@
 package it.giuugcola.oop.metadata;
 
+import it.giuugcola.oop.exceptions.DownloadException;
 import it.giuugcola.oop.exceptions.ParsingToJsonException;
 import it.giuugcola.oop.jsonhandler.JSONHandler;
 import it.giuugcola.oop.jsonhandler.JSONOfFolder;
@@ -30,7 +31,7 @@ public class Downloaded {
      * @param result Oggetto Multimedia da aggiungere.
      * @return Esito dell'aggiunta.
      */
-    public boolean addMultimedia(Object result) throws ParsingToJsonException {
+    public boolean addMultimedia(Object result) throws ParsingToJsonException, DownloadException {
         JSONOfMultimedia jMultimedia = new JSONOfMultimedia();
         JSONHandler.setJSONOfMultimedia(result, jMultimedia);
 
@@ -62,8 +63,8 @@ public class Downloaded {
             }
 
             return true;
-        }
-        return false;
+        }else
+            throw new DownloadException("Download NON eseguito! Esiste gia uno stesso file scaricato!");
     }
 
     /**
@@ -72,7 +73,7 @@ public class Downloaded {
      * @param result Oggetto Folder da aggiungere.
      * @return Esito dell'aggiunta.
      */
-    public boolean addFolder(Object result) throws ParsingToJsonException {
+    public boolean addFolder(Object result) throws ParsingToJsonException, DownloadException {
         JSONOfFolder jFolder = new JSONOfFolder();
         JSONHandler.setJSONOfFolder(result, jFolder);
 
@@ -84,8 +85,8 @@ public class Downloaded {
                     jFolder.getId()
             ));
             return true;
-        }
-        return false;
+        }else
+            throw new DownloadException("Download NON eseguito! Esiste gia uno stesso zip scaricato!");
     }
 
     /**
