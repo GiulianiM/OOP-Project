@@ -19,8 +19,14 @@
 
 <img align="right" src="img/dB/MiniLogoBlu.png" alt="Icona Dropbox" width="88" height="88" >
 
-L'applicazione SpringBoot qui pubblicata ha come scopo principale quello di scaricare file dal proprio account Dropbox,
-mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview).
+L'applicazione SpringBoot qui pubblicata permette di scaricare file dal proprio account Dropbox ed effettuare,
+statistiche su di essi, mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/documentation/http/overview).
+
+L'obiettivo principale è quello di scaricare una cartella o un file dal proprio Dropbox ed effettuare
+statistiche in locale sui file scaricati in base alla dimensione e al tipo, con l'implementazione di
+filtri che permettano di visualizzare solo ciò di cui  
+si ha bisogno, specificando dimensione minima o
+massima e tipo di file.
 
 **Funzioni dell'applicazione**:
 
@@ -43,7 +49,7 @@ mediante l'utilizzo della [Dropbox Api V2](https://www.dropbox.com/developers/do
 | ` post ` | [`/getMetaFromPath`](#/getMetaFromPath)       | Restituisce informazioni sul file o la cartella con il loro percorso.             | `path`          |
 | ` post ` | [`/downloadFile`](#/downloadFile)             | Effettua il download di un file.                                                  | `path`          |
 | ` post ` | [`/downloadZip`](#/downloadZip)               | Effettua il download di una cartella.                                             | `path`          |
-| ` post ` | [`/stats`](#/stats)                           | Restituisce la lista dei file scaricati.                                          | `filter`, `tag` |
+| ` get `  | [`/stats`](#/stats)                           | Restituisce la lista dei file scaricati.                                          | `filter`, `tag` |
 | ` get `  | [`/stats/getMinAvgMax`](#/stats/getMinAvgMax) | Calcola dimensione minima, media e massima per tipo di file scaricato.            | `tag`           |
 
 <a name="rotte-post"></a>
@@ -341,8 +347,8 @@ I parametri sono `filter` e `tag`e possono essere usati assieme o singolarmente.
 | `file`  | File (tutti eccetto foto e video) |
 | `photo` | Foto                              |
 | `video` | Video                             |  
-  
-Nella formulazione del parametro `filter` bisogna seguire delle regole: 
+
+Nella formulazione del parametro `filter` bisogna seguire delle regole:
 * Per tutti i filter eccetto `bt` va specificato un solo valore di comparazione.
 * Il valore deve essere raccolto nelle parentesi tonde, ESEMPIO: `(3.9)`.
 * Il valore nelle parentesi va posto dopo il filter, ESEMPIO: `gt(2.4)`.
@@ -353,21 +359,21 @@ Utilizzando entrambi i parametri la chiamata sarà di questo tipo:
 
 ![Rotta statsFilter](img/get/statsFil.png)
 
-Dove otterremo la lista dei file che soddisfano i parametri specificati.  
+In questo modo otterremo la lista dei file che soddisfano i parametri specificati.
 
-JSON con parametri `filter=gt(1.2)` e `tag=file`:  
+JSON con parametri `filter=gt(1.2)` e `tag=file`:
 
 ```json
 {
-    "request_time": "16/12/2021 22:55:44",
-    "file_tag": {
-        "file": [
-            {
-                "size": "2,07MB",
-                "name": "sample_of_text.txt"
-            }
-        ]
-    }
+  "request_time": "16/12/2021 22:55:44",
+  "file_tag": {
+    "file": [
+      {
+        "size": "2,07MB",
+        "name": "sample_of_text.txt"
+      }
+    ]
+  }
 }
 ```
 
@@ -379,65 +385,66 @@ JSON con parametri `filter=gt(1.2)` e `tag=file`:
 
 ![Rotta minAvgMax](img/get/minAvgMax.png)
 
-La chiamata `/stats/getMinAvgMax` restituisce una lista suddivisa per tipo di file, del file più 
-piccolo, della dimensione media del tipo e del file più grande.  
+La chiamata `/stats/getMinAvgMax` effettua statistiche sulle dimensioni minima, 
+media e massima dei file scaricati per tipo di file; restituendo una lista suddivisa per tipo di file, 
+contenente il più piccolo, il più grande e la dimensione media. 
 
-In risposta otteniamo un JSON di questo tipo:  
+In risposta otteniamo un JSON di questo tipo:
 
 ```json
 {
-    "request_time": "16/12/2021 22:59:36",
-    "file_tag": {
-        "file": [
-            {
-                "min": {
-                    "size": "2,07MB",
-                    "name": "sample_of_text.txt"
-                },
-                "avg": {
-                    "size": "2,07MB"
-                },
-                "max": {
-                    "size": "2,07MB",
-                    "name": "sample_of_text.txt"
-                }
-            }
-        ],
-        "photo": [
-            {
-                "min": {
-                    "size": "0,03MB",
-                    "name": "Parrots.jpg"
-                },
-                "avg": {
-                    "size": "0,03MB"
-                },
-                "max": {
-                    "size": "0,03MB",
-                    "name": "Parrots.jpg"
-                }
-            }
-        ],
-        "video": [
-            {
-                "min": {
-                    "size": "1,01MB",
-                    "name": "SampleVideo_1280x720_1mb.mp4"
-                },
-                "avg": {
-                    "size": "1,01MB"
-                },
-                "max": {
-                    "size": "1,01MB",
-                    "name": "SampleVideo_1280x720_1mb.mp4"
-                }
-            }
-        ]
-    }
+  "request_time": "16/12/2021 22:59:36",
+  "file_tag": {
+    "file": [
+      {
+        "min": {
+          "size": "2,07MB",
+          "name": "sample_of_text.txt"
+        },
+        "avg": {
+          "size": "2,07MB"
+        },
+        "max": {
+          "size": "2,07MB",
+          "name": "sample_of_text.txt"
+        }
+      }
+    ],
+    "photo": [
+      {
+        "min": {
+          "size": "0,03MB",
+          "name": "Parrots.jpg"
+        },
+        "avg": {
+          "size": "0,03MB"
+        },
+        "max": {
+          "size": "0,03MB",
+          "name": "Parrots.jpg"
+        }
+      }
+    ],
+    "video": [
+      {
+        "min": {
+          "size": "1,01MB",
+          "name": "SampleVideo_1280x720_1mb.mp4"
+        },
+        "avg": {
+          "size": "1,01MB"
+        },
+        "max": {
+          "size": "1,01MB",
+          "name": "SampleVideo_1280x720_1mb.mp4"
+        }
+      }
+    ]
+  }
 }
 ```  
-  
-Nella chiamata possiamo anche specificare il parametro `tag`:  
+
+Nella chiamata possiamo anche specificare il parametro `tag`:
 
 | tag     | Valore                            |
 |---------|-----------------------------------|
@@ -448,30 +455,30 @@ Nella chiamata possiamo anche specificare il parametro `tag`:
 <br>
 Chiamata col parametro `tag=file`:  
 
-![Rotta minAvgMaxParam](img/get/minAvgMaxParam.png)  
+![Rotta minAvgMaxParam](img/get/minAvgMaxParam.png)
 
-Il JSON col parametro specificato sarà di questo tipo:  
-  
+Il JSON col parametro specificato sarà di questo tipo:
+
 ```json
 {
-    "request_time": "16/12/2021 23:13:38",
-    "file_tag": {
-        "file": [
-            {
-                "min": {
-                    "size": "2,07MB",
-                    "name": "sample_of_text.txt"
-                },
-                "avg": {
-                    "size": "2,07MB"
-                },
-                "max": {
-                    "size": "2,07MB",
-                    "name": "sample_of_text.txt"
-                }
-            }
-        ]
-    }
+  "request_time": "16/12/2021 23:13:38",
+  "file_tag": {
+    "file": [
+      {
+        "min": {
+          "size": "2,07MB",
+          "name": "sample_of_text.txt"
+        },
+        "avg": {
+          "size": "2,07MB"
+        },
+        "max": {
+          "size": "2,07MB",
+          "name": "sample_of_text.txt"
+        }
+      }
+    ]
+  }
 }
 ```
 
@@ -479,9 +486,9 @@ Il JSON col parametro specificato sarà di questo tipo:
 
 ## Schema Classi :file_folder:
 
-La struttura del progetto è rappresentata in quest'immagine:  
+La struttura del progetto è rappresentata in quest'immagine:
 
-![Schema](img/oop.png) 
+![Schema](img/oop.png)
 
 
 <a name="tecnologie-utilizzate"></a>

@@ -9,6 +9,12 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
+/**
+ * Classe per la lettura su file.
+ *
+ * @author Davide Colabella
+ * @author Matteo Giuliani
+ */
 public class InputFromFile {
 
     /**
@@ -26,7 +32,13 @@ public class InputFromFile {
      */
     private static final String FILE_FOLDER = "folder.txt";
 
-
+    /**
+     * Metodo per leggere dai file txt tutti i file e le cartelle scaricate.
+     *
+     * @param downloaded Oggetto {@link Downloaded} che conterrà tutti i file scaricati
+     * @throws FileException          Se la lettura su file genera errori
+     * @throws ParsingToJsonException Se la creazione del JSON genera errori
+     */
     public InputFromFile(Downloaded downloaded) throws FileException, ParsingToJsonException, DownloadException {
         if (new File(PATH + FILE_MULTIMEDIA).exists())
             setArrayOfMultimedia(downloaded);
@@ -34,6 +46,11 @@ public class InputFromFile {
             setArrayOfFolders(downloaded);
     }
 
+    /**
+     * Metodo ausiliario di {@link #InputFromFile(Downloaded)}, che legge i file multimediali scaricati.
+     *
+     * @param downloaded Oggetto {@link Downloaded} che conterrà tutti i file scaricati
+     */
     private void setArrayOfMultimedia(Downloaded downloaded) throws FileException, ParsingToJsonException, DownloadException {
         JSONParser jParser = new JSONParser();
         StringBuilder content = new StringBuilder();
@@ -57,6 +74,11 @@ public class InputFromFile {
         }
     }
 
+    /**
+     * Metodo ausiliario di {@link #InputFromFile(Downloaded)}, che legge le cartelle scaricate.
+     *
+     * @param downloaded Oggetto {@link Downloaded} che conterrà tutti i file scaricati
+     */
     private void setArrayOfFolders(Downloaded downloaded) throws FileException, ParsingToJsonException, DownloadException {
         JSONParser jParser = new JSONParser();
         StringBuilder content = new StringBuilder();
