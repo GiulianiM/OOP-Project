@@ -168,7 +168,9 @@ In risposta otterremo un JSON del tipo:
 
 ![rotta getMetaFromId](img/post/getMetaFromId.png "Immagine getMetaFromId")
 La chiamata `/getMetaFromId` prende come parametro `id` e il suo valore corrisponde all'id univoco del percorso o file
-di cui vogliamo ottenere informazioni, l'id nella foto è `DsnniHqkdCgAAAAAAAAACQ`.
+di cui vogliamo ottenere informazioni, l'id nella foto è `id:DsnniHqkdCgAAAAAAAAACQ`.
+Nota: il parametro `id` necessita di essere formattato come nel seguente esempio: `id=id:<ID_UNIVOCO_DEL_FILE>`.
+
 
 | Parametro | Valore        |
 |-----------|---------------|
