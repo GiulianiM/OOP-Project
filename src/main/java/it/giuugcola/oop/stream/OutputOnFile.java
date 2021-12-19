@@ -96,7 +96,7 @@ public class OutputOnFile {
      */
     private void getStringToAppend(String fileName, String resultToString) throws FileException {
         checkFolderExist();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.PATH + fileName, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(PATH + fileName, true))) {
 
             writer.append(getHumanReadableName(resultToString));
             writer.newLine();
