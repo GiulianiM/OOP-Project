@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"it.giuugcola.oop"},{"l":"it.giuugcola.oop.exceptions"},{"l":"it.giuugcola.oop.jsonhandler"},{"l":"it.giuugcola.oop.metadata"},{"l":"it.giuugcola.oop.restcontroller"},{"l":"it.giuugcola.oop.settings"},{"l":"it.giuugcola.oop.stream"},{"l":"it.giuugcola.oop.utility"}];updateSearchResults();
